@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PowerMatch — Risk Report</title>
+<link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+body {
+  margin:0;
+  padding:0;
+  font-family:'Onest', sans-serif;
+  background:url('https://raw.githubusercontent.com/kamo9733-cell/powermatch/c745fdc0c12367dee472388d4fb054fe73925b42/background.webp') center/cover no-repeat fixed;
+}
+.login-wrap {
+  width:100%;
+  margin:auto;
+  max-width:620px;
+  min-height:650px;
+  position:relative;
+  padding-top:100px;
+}
+.login-html {
+  position:relative;
+  background:url('https://raw.githubusercontent.com/kamo9733-cell/powermatch/257584bd2eb4ae6098b80d6d42de914b3ffd7e3a/paper-texture.webp') center/cover no-repeat;
+  border-radius:10px;
+  box-shadow:0 3px 22px rgba(0,0,0,0.28);
+  padding:40px 40px 50px;
+  overflow:hidden;
+}
+.logo-row {
+  display:flex;
+  justify-content:center;
+  align-items:center;
+  gap:12px;
+  margin-bottom:20px;
+}
+.logo-row img { height:40px; object-fit:contain; }
+.title {
+  text-align:center;
+  font-size:24px;
+  font-weight:600;
+  margin-bottom:8px;
+  color:#1c1c1c;
+}
+.subtitle {
+  text-align:center;
+  font-size:14px;
+  font-weight:400;
+  color:#555;
+  margin-bottom:28px;
+}
+.label {
+  display:block;
+  font-size:15px;
+  font-weight:500;
+  margin-bottom:6px;
+  color:#222;
+}
+.required-star { color:#d10000; margin-left:3px; }
+input, select, textarea {
+  width:100%;
+  padding:10px 12px;
+  font-size:14px;
+  font-weight:400;
+  border:1px solid #cfcfcf;
+  border-radius:6px;
+  box-sizing:border-box;
+  background:white;
+  margin-bottom:22px;
+  font-family:'Onest', sans-serif;
+  color:#222;
+}
+textarea { min-height:140px; resize:vertical; line-height:1.35; }
+.button {
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:6px;
+  font-size:16px;
+  font-weight:600;
+  cursor:pointer;
+  background:#C8A73E;
+  color:white;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  margin-top:10px;
+  text-decoration:none;
+  text-align:center;
+  display:inline-block;
+}
+.button:hover { opacity:0.92; transform:translateY(-1px); }
+.button:active { opacity:0.85; transform:translateY(0); }
+
+.processing .form-content {
+  filter:blur(3px);
+  pointer-events:none;
+}
+.processing .processing-overlay {
+  display:flex;
+}
+.processing-overlay {
+  display:none;
+  position:absolute;
+  top:0; left:0; right:0; bottom:0;
+  backdrop-filter:blur(3px);
+  justify-content:center;
+  align-items:center;
+  flex-direction:column;
+  font-size:16px;
+  color:#222;
+}
+.spinner {
+  width:40px; height:40px;
+  border:4px solid #C8A73E;
+  border-top-color:transparent;
+  border-radius:50%;
+  animation:spin 0.8s linear infinite;
+  margin-bottom:12px;
+}
+@keyframes spin { to { transform:rotate(360deg); } }
+</style>
+</head>
+<body>
+
+<div class="login-wrap">
+  <div class="login-html">
+
+    <div class="logo-row">
+      <img src="https://karriere.powermatch.dk/assets/images/career/logo.svg">
+      <img src="https://karriere.powermatch.dk/assets/images/career/Logotype-black.svg">
+    </div>
+    <div class="title">Candidate Risk Report</div>
+    <div class="subtitle">Internal Assessment Tool</div>
+
+    <form id="riskForm" action="https://hassni.app.n8n.cloud/webhook-test/powermatch_risk_report" method="POST">
+      <div class="form-content">
+        <label class="label">Name<span class="required-star">*</span></label>
+        <input type="text" name="Name" required>
+
+        <label class="label">Who has been interviewed<span class="required-star">*</span></label>
+        <select name="Entity being interviewed" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="Tradesmen">Tradesmen</option>
+        </select>
+
+        <label class="label">Transcript<span class="required-star">*</span></label>
+        <textarea name="Transcript" placeholder="Paste transcript..." required></textarea>
+
+        <label class="label">Profession<span class="required-star">*</span></label>
+        <select name="Profession" required>
+          <option value="" disabled selected>Select...</option>
+          <option value="Carpentry">Carpentry</option>
+          <option value="Masonry">Masonry</option>
+          <option value="Plumbing">Plumbing</option>
+          <option value="Electrician">Electrician</option>
+          <option value="House Painter">House Painter</option>
+        </select>
+
+        <button type="submit" class="button">Generate Report</button>
+      </div>
+
+      <div class="processing-overlay" id="processingOverlay">
+        <div class="spinner" id="loaderSpinner"></div>
+        <span id="loaderText">Evaluating Transcript…</span>
+      </div>
+    </form>
+
+  </div>
+</div>
+
+<script>
+document.getElementById("riskForm").addEventListener("submit", async function(e) {
+  e.preventDefault();
+
+  const form = e.target;
+  const formData = new FormData(form);
+
+  document.querySelector('.login-html').classList.add('processing');
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: formData
+    });
+
+    const reportUrl = await response.text();
+
+    const overlay = document.getElementById("processingOverlay");
+    const spinner = document.getElementById("loaderSpinner");
+    const text = document.getElementById("loaderText");
+
+    if (reportUrl && reportUrl.startsWith("http")) {
+      spinner.style.display = "none";
+      text.innerHTML = `<a href="${reportUrl}" target="_blank" class="button" style="width:auto;">View Report</a>`;
+    } else {
+      spinner.style.display = "none";
+      text.innerText = "Failed to generate report.";
+    }
+
+  } catch (err) {
+    const text = document.getElementById("loaderText");
+    const spinner = document.getElementById("loaderSpinner");
+    spinner.style.display = "none";
+    text.innerText = "Error communicating with server.";
+  }
+});
+</script>
+
+</body>
+</html>

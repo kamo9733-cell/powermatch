@@ -6,5 +6,18 @@
  "state.seated": "Besetzt",
  "state.empty": "Frei",
  "state.needs_clean": "Muss gereinigt werden",
- "coach.tip": "Am längsten wartende Tische stehen oben, damit das Team gemeinsam ausgleichen kann."
+ "coach.tip": "Am längsten wartende Tische stehen oben, damit das Team gemeinsam ausgleichen kann.",
+ "notify.nudge.title": "Tisch {table} freut sich über einen Besuch",
+ "notify.nudge.body": "Seit {minutes} Min. gesetzt, noch kein Besuch. Ein kurzer Gruß hilft viel.",
+ "notify.digest.title": "{n} Tische warten auf ein Hallo",
+ "notify.digest.body": "Tische: {tables}. Nimm den, der dir am nächsten ist.",
+ "notify.lead.title": "Bereich {section} kann Unterstützung brauchen",
+ "notify.lead.body": "{what} Kannst du aushelfen?",
+ "notify.manager.title": "Unterstützung nötig in {section}",
+ "notify.manager.body": "{what} Das Team im Bereich ist vielleicht gerade beschäftigt.",
+ "notify.what.one": "Tisch {table} wartet seit etwa {minutes} Min.",
+ "notify.what.many": "{n} Tische warten: {tables}.",
+ "notify.action.ack": "Mach ich",
+ "notify.action.snooze": "Gib mir 10 Minuten",
+ "notify.resolved": "Erledigt, danke!"
 }

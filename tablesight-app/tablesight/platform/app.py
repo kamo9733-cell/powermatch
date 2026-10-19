@@ -796,6 +796,34 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         return {"mode": mode, "n": len(g), "median_s": sorted(g)[len(g) // 2] if g else None,
                 "note": "Team-level only; individual staff are never named in anonymized mode."}
 
+    @app.get("/me")
+    def whoami(ctx: dict = Depends(me)):
+        u = db.execute("SELECT email, lang FROM users WHERE id=?", (ctx["user_id"],)).fetchone()
+        return {"user_id": ctx["user_id"], "email": u["email"], "lang": u["lang"], "org_id": ctx["org_id"],
+                "role": ctx["role"], "location_id": ctx["location_id"], "section": ctx["section"],
+                "permissions": sorted(rbac.PERMS.get(ctx["role"], set()))}
+
+    @app.post("/alerts/ack")
+    def ack_alert(location_id: str, event_id: Annotated[str, Query(min_length=1, max_length=128)],
+                  ctx: dict = Depends(me)):
+        """Acknowledge a needs_attention event. Idempotent. Servers can only ack events in their own section
+        because the lookup goes through the same scoped query as GET /events."""
+        need(ctx, "alerts.ack")
+        loc_ok(ctx, location_id)
+        evs = [e for e in fetch_events(ctx, location_id, 0, MAX_EXPORT_ROWS)
+               if e["event_id"] == event_id and e["kind"] == "needs_attention"]
+        if not evs:
+            raise HTTPException(404, "alert not found")
+        with db.tx():
+            dup = db.execute("SELECT 1 FROM corrections WHERE org_id=? AND location_id=? AND kind='ack' "
+                             "AND json_extract(payload,'$.event_id')=?", (ctx["org_id"], location_id, event_id)).fetchone()
+            if not dup:
+                db.execute("INSERT INTO corrections(org_id,location_id,kind,payload,consent_training,t) VALUES(?,?,?,?,0,?)",
+                           (ctx["org_id"], location_id, "ack",
+                            json.dumps({"event_id": event_id, "by": ctx["user_id"]}), now()))
+        audit(ctx["org_id"], ctx["user_id"], "alert.ack", event_id)
+        return {"ok": True, "already": bool(dup)}
+
     # ---- corrections & data rights ----------------------------------------------------------
     @app.post("/corrections")
     def correction(location_id: str, kind: Annotated[str, Query(min_length=1, max_length=64)], payload: dict,

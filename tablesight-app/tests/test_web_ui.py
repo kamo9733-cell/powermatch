@@ -264,6 +264,7 @@ def test_host_mode_grid(servers, page):
 @pytest.mark.parametrize("lang", ["en", "ar"])
 def test_contrast_and_labels(servers, page, theme, lang):
     page.goto(servers["fresh"] + f"?lang={lang}&theme={theme}")
+    page.wait_for_selector("#email")  # sample only after first render (was a race)
     for stage in ("login", "floor", "settings"):
         if stage == "floor":
             login(page, servers["fresh"], lang=lang, theme=theme)

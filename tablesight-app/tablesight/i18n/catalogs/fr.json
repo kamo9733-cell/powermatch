@@ -6,5 +6,18 @@
  "state.seated": "Occupée",
  "state.empty": "Libre",
  "state.needs_clean": "À nettoyer",
- "coach.tip": "Les tables qui attendent le plus apparaissent en premier pour équilibrer le service en équipe."
+ "coach.tip": "Les tables qui attendent le plus apparaissent en premier pour équilibrer le service en équipe.",
+ "notify.nudge.title": "La table {table} apprécierait un passage",
+ "notify.nudge.body": "Installés depuis {minutes} min, pas encore de passage. Un petit bonjour fait beaucoup.",
+ "notify.digest.title": "{n} tables attendent un bonjour",
+ "notify.digest.body": "Tables : {tables}. Prenez la plus proche.",
+ "notify.lead.title": "Le secteur {section} a besoin d'un coup de main",
+ "notify.lead.body": "{what} Pouvez-vous aider ?",
+ "notify.manager.title": "Renfort nécessaire en {section}",
+ "notify.manager.body": "{what} L'équipe du secteur est peut-être occupée.",
+ "notify.what.one": "La table {table} attend depuis environ {minutes} min.",
+ "notify.what.many": "{n} tables attendent : {tables}.",
+ "notify.action.ack": "Je m'en occupe",
+ "notify.action.snooze": "Donnez-moi 10 minutes",
+ "notify.resolved": "C'est fait, merci !"
 }

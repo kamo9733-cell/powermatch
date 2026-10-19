@@ -6,5 +6,18 @@
  "state.seated": "مشغولة",
  "state.empty": "فارغة",
  "state.needs_clean": "تحتاج إلى تنظيف",
- "coach.tip": "تظهر الطاولات الأطول انتظارًا أولًا ليتمكن الفريق من توزيع العمل معًا."
+ "coach.tip": "تظهر الطاولات الأطول انتظارًا أولًا ليتمكن الفريق من توزيع العمل معًا.",
+ "notify.nudge.title": "قد ترغب الطاولة {table} بزيارة سريعة",
+ "notify.nudge.body": "جلسوا منذ {minutes} دقيقة ولم تتم زيارتهم بعد. ترحيب بسيط يصنع فرقًا.",
+ "notify.digest.title": "{n} طاولات تنتظر ترحيبًا",
+ "notify.digest.body": "الطاولات: {tables}. توجّه إلى الأقرب إليك.",
+ "notify.lead.title": "القسم {section} يحتاج إلى مساعدة",
+ "notify.lead.body": "{what} هل يمكنك المساعدة في التغطية؟",
+ "notify.manager.title": "مطلوب دعم في {section}",
+ "notify.manager.body": "{what} فريق القسم قد يكون مشغولًا الآن.",
+ "notify.what.one": "الطاولة {table} تنتظر منذ نحو {minutes} دقيقة.",
+ "notify.what.many": "{n} طاولات تنتظر: {tables}.",
+ "notify.action.ack": "أنا على ذلك",
+ "notify.action.snooze": "أمهلني 10 دقائق",
+ "notify.resolved": "تم، شكرًا!"
 }

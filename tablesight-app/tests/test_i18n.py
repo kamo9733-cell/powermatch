@@ -15,3 +15,9 @@ def test_rtl_and_fallback_and_tz():
     assert i18n.direction("ar") == "rtl" and i18n.direction("ar-EG") == "rtl" and i18n.direction("en") == "ltr"
     assert i18n.t("xx", "state.empty") == "Empty"
     assert i18n.local_time(0, "Asia/Dubai").hour == 4
+
+
+def test_notify_english_copy_matches_catalog():
+    from tablesight.notify.messages import EN
+    en = i18n.load("en")
+    assert all(en[k] == v for k, v in EN.items())

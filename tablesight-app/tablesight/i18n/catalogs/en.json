@@ -6,5 +6,18 @@
  "state.seated": "Seated",
  "state.empty": "Empty",
  "state.needs_clean": "Needs cleaning",
- "coach.tip": "Tables waiting longest are shown first so the team can balance the floor together."
+ "coach.tip": "Tables waiting longest are shown first so the team can balance the floor together.",
+ "notify.nudge.title": "Table {table} might like a check-in",
+ "notify.nudge.body": "Seated {minutes} min, no visit yet. A quick hello goes a long way.",
+ "notify.digest.title": "{n} tables could use a hello",
+ "notify.digest.body": "Tables: {tables}. Grab whichever is closest.",
+ "notify.lead.title": "Section {section} could use a hand",
+ "notify.lead.body": "{what} Could you help cover?",
+ "notify.manager.title": "Floor support needed in {section}",
+ "notify.manager.body": "{what} The section team may be busy right now.",
+ "notify.what.one": "Table {table} has been waiting about {minutes} min.",
+ "notify.what.many": "{n} tables are waiting: {tables}.",
+ "notify.action.ack": "On it",
+ "notify.action.snooze": "Give me 10 minutes",
+ "notify.resolved": "All set, thanks!"
 }

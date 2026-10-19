@@ -38,8 +38,10 @@ BANNED = (
 )  # fmt: skip
 
 
-def render(key: str, **kw) -> str:
-    return EN[key].format(**kw)
+def render(key: str, lang: str = "en", **kw) -> str:
+    # catalogs are the source of truth; EN above is checked against them in tests
+    from tablesight import i18n
+    return i18n.t(lang, key, **kw)
 
 
 def build_message(d: Dispatch, minutes: int = 0) -> Message:

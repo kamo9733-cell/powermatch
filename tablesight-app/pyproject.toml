@@ -8,8 +8,11 @@ dependencies = []
 [project.optional-dependencies]
 dev = ["pytest", "ruff"]
 
-[tool.setuptools]
-packages = ["tablesight"]
+[tool.setuptools.packages.find]
+include = ["tablesight*"]
+
+[tool.setuptools.package-data]
+"tablesight.i18n" = ["catalogs/*.json"]
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

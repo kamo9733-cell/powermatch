@@ -13,3 +13,7 @@ Only **synthetic** results (simulator + `tests/test_hero_loop.py`): on scripted 
 
 ## Intended use
 Coaching nudges to managers; never automated discipline of individuals. Not for biometric identification.
+
+
+## Real-footage status (updated)
+Evaluated (smoke-level, author-eyeballed, 3 clips) in docs/EVAL_REAL.md. Summary: person detection + zone assignment OK on a static CCTV view; tracking fragments on busy/moving scenes; **staff-vs-guest classification failed** (0/3 visible staff correct on a checked frame). Not ready for any customer-facing alert that depends on knowing who is staff.

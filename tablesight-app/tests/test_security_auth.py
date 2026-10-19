@@ -118,7 +118,7 @@ def test_per_ip_signup_limit():
 
 
 def test_reset_request_per_email_cap_is_silent_and_per_ip_cap_is_enforced():
-    c, ob, _, clk = make()
+    c, ob, _, _ = make()
     signup(c, ob, "r@x.com")
     for _ in range(8):
         assert c.post("/password-reset/request", params={"email": "r@x.com"}).json() == {"ok": True}
@@ -333,7 +333,7 @@ def test_pairing_code_and_invite_cannot_be_redeemed_twice_in_a_race():
 
 
 def test_failed_transaction_leaves_no_partial_rows():
-    c, ob, app, _ = make()
+    _, _, app, _ = make()
     db = app.state.db
     try:
         with db.tx():

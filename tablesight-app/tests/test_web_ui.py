@@ -12,7 +12,7 @@ sys.path.insert(0, str(ROOT))
 
 try:
     from playwright.sync_api import sync_playwright
-except Exception:  # pragma: no cover
+except Exception:  # noqa: BLE001  # pragma: no cover
     sync_playwright = None
 
 CHROME = (sorted(glob.glob("/opt/pw-browsers/chromium-*/chrome-linux*/chrome")) or [None])[-1]
@@ -70,7 +70,7 @@ def browser():
     with sync_playwright() as p:
         try:
             br = p.chromium.launch(executable_path=CHROME, args=["--no-sandbox", "--no-proxy-server"])
-        except Exception as e:  # pragma: no cover
+        except Exception as e:  # noqa: BLE001  # pragma: no cover
             pytest.skip(f"chromium cannot launch: {e}")
         yield br
         br.close()
@@ -84,12 +84,30 @@ def page(browser):
     ctx.close()
 
 
+_TOKENS = {}
+
+
+def api_token(url, email):
+    """One real API login per user per server (the API rate-limits logins); UI-login flows are tested explicitly."""
+    import urllib.request
+    base = url.split("/app/")[0]
+    if (base, email) not in _TOKENS:
+        req = urllib.request.Request(base + "/login", data=json.dumps({"email": email, "password": PW}).encode(),
+                                     headers={"Content-Type": "application/json"})
+        _TOKENS[(base, email)] = json.loads(urllib.request.urlopen(req).read())["token"]
+    return _TOKENS[(base, email)]
+
+
 def login(pg, url, email=OWNER, totp=None, lang="en", theme="dark"):
+    """Sign in through the real form only when a totp is supplied; otherwise reuse a session token."""
+    if totp is None:
+        pg.add_init_script(f"try{{sessionStorage.setItem('ts.tok','{api_token(url, email)}')}}catch(e){{}}")
+        pg.goto(f"{url}?lang={lang}&theme={theme}")
+        return
     pg.goto(f"{url}?lang={lang}&theme={theme}")
     pg.fill("#email", email)
     pg.fill("#password", PW)
-    if totp:
-        pg.fill("#totp", totp)
+    pg.fill("#totp", totp)
     pg.click("button[type=submit]")
 
 
@@ -158,7 +176,7 @@ def test_rtl_layout_flips(servers, browser):
         assert pg.evaluate("document.documentElement.dir") == ("rtl" if lang == "ar" else "ltr")
         pos[lang] = pg.evaluate("""() => { const r=document.querySelector('.floor .row'); const n=r.querySelector('.name').getBoundingClientRect(); const w=r.querySelector('.wait').getBoundingClientRect(); return {name:n.left, wait:w.left}; }""")
         if lang == "ar":
-            assert "طاولة" in pg.inner_text(".floor .row .name")
+            assert "طاولة" in pg.get_attribute(".floor .row .name", "aria-label")
             assert pg.evaluate("document.documentElement.scrollWidth <= document.documentElement.clientWidth")
         ctx.close()
     assert pos["en"]["wait"] > pos["en"]["name"]   # LTR: wait on the right of the name
@@ -248,7 +266,7 @@ def test_contrast_and_labels(servers, page, theme, lang):
     page.goto(servers["fresh"] + f"?lang={lang}&theme={theme}")
     for stage in ("login", "floor", "settings"):
         if stage == "floor":
-            page.fill("#email", OWNER); page.fill("#password", PW); page.click("button[type=submit]")
+            login(page, servers["fresh"], lang=lang, theme=theme)
             rows(page)
         if stage == "settings":
             page.evaluate("location.hash='#/settings'")
@@ -261,6 +279,8 @@ def test_contrast_and_labels(servers, page, theme, lang):
 
 def test_keyboard_focus_visible(servers, page):
     page.goto(servers["fresh"])
+    page.wait_for_selector("#email")
+    page.evaluate("document.activeElement.blur()")
     seen = []
     for _ in range(6):
         page.keyboard.press("Tab")

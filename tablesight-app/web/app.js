@@ -28,6 +28,7 @@
     $("#lang").value = lang;
     document.querySelectorAll("[data-i18n]").forEach(function (el) { el.textContent = t(el.getAttribute("data-i18n")); });
     $("#modes").setAttribute("aria-label", t("ui.views"));
+    $("#menu").removeAttribute("open");
     paintTheme();
   }
 
@@ -303,7 +304,7 @@
     if (x.st === "seated") meta.push(x.sinceCheck ? t("wait.since_check") : t("wait.since_seat"));
     if (x.unc && x.st === "seated") meta.push(t("ui.last_known"));
     if (stale && x.st === "seated" && !x.unc) meta.push(t("ui.last_known"));
-    li.appendChild(h("div", {}, [h("div", { class: "name", text: t("ui.table", { table: x.id }) }),
+    li.appendChild(h("div", {}, [h("div", { class: "name", text: /^\d/.test(x.id) ? t("ui.table", { table: x.id }) : x.id, "aria-label": t("ui.table", { table: x.id }) }),
       h("span", { class: "st", text: stText }), meta.length ? h("span", { class: "meta", text: meta.join(" · ") }) : null]));
     if (x.st === "seated") li.appendChild(h("div", { class: "wait" }, [mins(x.wait), h("small", { text: t("ui.min") })]));
     var a = ackedFor(x);
@@ -318,7 +319,7 @@
   }
   function wrongPanel(x) {
     var reasons = [["visited", "wrong.visited"], ["left", "wrong.left"], ["not_table", "wrong.notable"], ["other", "wrong.other"]];
-    var box = h("div", { class: "acts reasons", role: "group", "aria-label": t("wrong.title") }, [h("p", { class: "meta", style: "flex-basis:100%;margin:0", text: t("wrong.title") })]);
+    var box = h("div", { class: "acts reasons", role: "group", "aria-label": t("wrong.title") }, [h("p", { class: "meta full", text: t("wrong.title") })]);
     reasons.forEach(function (r) { box.appendChild(h("button", { class: "btn sec", type: "button", text: t(r[1]), onclick: function () { send(x, "wrong_alert", r[0]); } })); });
     box.appendChild(h("button", { class: "btn ghost", type: "button", text: t("wrong.cancel"), onclick: function () { S.wrongOpen = null; renderFloor(); } }));
     box.addEventListener("keydown", function (e) { if (e.key === "Escape") { S.wrongOpen = null; renderFloor(); } });

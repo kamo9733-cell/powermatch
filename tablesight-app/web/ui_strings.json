@@ -1,6 +1,6 @@
 {
 "en": {
-"ui.skip":"Skip to content","ui.language":"Language","ui.signout":"Sign out","ui.theme.to_light":"Light mode","ui.theme.to_dark":"Dark mode","ui.views":"Views","ui.location":"Location",
+"ui.menu":"Menu","ui.skip":"Skip to content","ui.language":"Language","ui.signout":"Sign out","ui.theme.to_light":"Light mode","ui.theme.to_dark":"Dark mode","ui.views":"Views","ui.location":"Location",
 "nav.floor":"Live floor","nav.host":"Host stand","nav.tv":"Kitchen TV","nav.settings":"Settings",
 "login.title":"Sign in","login.email":"Email","login.password":"Password","login.totp":"Authenticator code","login.totp_hint":"6 digits from your authenticator app. Only needed if two-step sign-in is on.","login.submit":"Sign in","login.busy":"Signing in…",
 "login.err.invalid":"That email and password don't match. Try again.","login.err.2fa":"Enter the 6-digit code from your authenticator app.","login.err.locked":"Too many tries. This account is paused for a few minutes.","login.err.rate":"Too many attempts. Wait a minute and try again.","login.err.unverified":"Please verify your email first, then sign in.","login.err.net":"Can't reach TableSight. Check your connection.",
@@ -17,7 +17,7 @@
 "settings.ret":"Keep event history for (days)","settings.ret_hint":"Shorter is more private. Your plan sets the maximum.","settings.save":"Save changes","settings.saved":"Saved.","settings.err.forbidden":"Only owners and managers can change these settings.","settings.err.generic":"Couldn't save. Try again."
 },
 "ar": {
-"ui.skip":"تخطَّ إلى المحتوى","ui.language":"اللغة","ui.signout":"تسجيل الخروج","ui.theme.to_light":"الوضع الفاتح","ui.theme.to_dark":"الوضع الداكن","ui.views":"العروض","ui.location":"الموقع",
+"ui.menu":"القائمة","ui.skip":"تخطَّ إلى المحتوى","ui.language":"اللغة","ui.signout":"تسجيل الخروج","ui.theme.to_light":"الوضع الفاتح","ui.theme.to_dark":"الوضع الداكن","ui.views":"العروض","ui.location":"الموقع",
 "nav.floor":"الصالة مباشرة","nav.host":"منصة الاستقبال","nav.tv":"شاشة المطبخ","nav.settings":"الإعدادات",
 "login.title":"تسجيل الدخول","login.email":"البريد الإلكتروني","login.password":"كلمة المرور","login.totp":"رمز المصادقة","login.totp_hint":"6 أرقام من تطبيق المصادقة. مطلوب فقط إذا كان التحقق بخطوتين مفعّلًا.","login.submit":"دخول","login.busy":"جارٍ الدخول…",
 "login.err.invalid":"البريد وكلمة المرور غير متطابقين. حاول مرة أخرى.","login.err.2fa":"أدخل الرمز المكوّن من 6 أرقام من تطبيق المصادقة.","login.err.locked":"محاولات كثيرة. الحساب متوقف لبضع دقائق.","login.err.rate":"محاولات كثيرة. انتظر دقيقة ثم حاول مجددًا.","login.err.unverified":"يرجى تأكيد بريدك الإلكتروني أولًا.","login.err.net":"تعذّر الوصول إلى TableSight. تحقق من الاتصال.",
@@ -34,7 +34,7 @@
 "settings.ret":"مدة حفظ سجل الأحداث (أيام)","settings.ret_hint":"كلما قلّت زادت الخصوصية. باقتك تحدد الحد الأقصى.","settings.save":"حفظ التغييرات","settings.saved":"تم الحفظ.","settings.err.forbidden":"المالكون والمديرون فقط يمكنهم تغيير هذه الإعدادات.","settings.err.generic":"تعذّر الحفظ. حاول مجددًا."
 },
 "es": {
-"ui.skip":"Saltar al contenido","ui.language":"Idioma","ui.signout":"Cerrar sesión","ui.theme.to_light":"Modo claro","ui.theme.to_dark":"Modo oscuro","ui.views":"Vistas","ui.location":"Local",
+"ui.menu":"Menú","ui.skip":"Saltar al contenido","ui.language":"Idioma","ui.signout":"Cerrar sesión","ui.theme.to_light":"Modo claro","ui.theme.to_dark":"Modo oscuro","ui.views":"Vistas","ui.location":"Local",
 "nav.floor":"Sala en vivo","nav.host":"Puesto de recepción","nav.tv":"TV de cocina","nav.settings":"Ajustes",
 "login.title":"Iniciar sesión","login.email":"Correo electrónico","login.password":"Contraseña","login.totp":"Código del autenticador","login.totp_hint":"6 dígitos de tu app. Solo si la verificación en dos pasos está activa.","login.submit":"Entrar","login.busy":"Entrando…",
 "login.err.invalid":"El correo y la contraseña no coinciden. Inténtalo de nuevo.","login.err.2fa":"Introduce el código de 6 dígitos de tu app autenticadora.","login.err.locked":"Demasiados intentos. La cuenta está en pausa unos minutos.","login.err.rate":"Demasiados intentos. Espera un minuto.","login.err.unverified":"Verifica primero tu correo.","login.err.net":"No se puede conectar con TableSight.",
@@ -51,7 +51,7 @@
 "settings.ret":"Conservar historial (días)","settings.ret_hint":"Menos días, más privacidad. Tu plan fija el máximo.","settings.save":"Guardar cambios","settings.saved":"Guardado.","settings.err.forbidden":"Solo propietarios y gerentes pueden cambiar esto.","settings.err.generic":"No se pudo guardar."
 },
 "de": {
-"ui.skip":"Zum Inhalt springen","ui.language":"Sprache","ui.signout":"Abmelden","ui.theme.to_light":"Hellmodus","ui.theme.to_dark":"Dunkelmodus","ui.views":"Ansichten","ui.location":"Standort",
+"ui.menu":"Menü","ui.skip":"Zum Inhalt springen","ui.language":"Sprache","ui.signout":"Abmelden","ui.theme.to_light":"Hellmodus","ui.theme.to_dark":"Dunkelmodus","ui.views":"Ansichten","ui.location":"Standort",
 "nav.floor":"Live-Service","nav.host":"Empfang","nav.tv":"Küchen-TV","nav.settings":"Einstellungen",
 "login.title":"Anmelden","login.email":"E-Mail","login.password":"Passwort","login.totp":"Authenticator-Code","login.totp_hint":"6 Ziffern aus deiner App. Nur nötig, wenn die Zwei-Schritt-Anmeldung aktiv ist.","login.submit":"Anmelden","login.busy":"Anmeldung…",
 "login.err.invalid":"E-Mail und Passwort passen nicht. Bitte erneut versuchen.","login.err.2fa":"Gib den 6-stelligen Code deiner Authenticator-App ein.","login.err.locked":"Zu viele Versuche. Das Konto ist kurz gesperrt.","login.err.rate":"Zu viele Versuche. Bitte eine Minute warten.","login.err.unverified":"Bitte zuerst die E-Mail bestätigen.","login.err.net":"TableSight ist nicht erreichbar.",
@@ -68,7 +68,7 @@
 "settings.ret":"Ereignisverlauf behalten (Tage)","settings.ret_hint":"Kürzer ist privater. Dein Tarif legt das Maximum fest.","settings.save":"Änderungen speichern","settings.saved":"Gespeichert.","settings.err.forbidden":"Nur Inhaber und Manager dürfen das ändern.","settings.err.generic":"Speichern fehlgeschlagen."
 },
 "fr": {
-"ui.skip":"Aller au contenu","ui.language":"Langue","ui.signout":"Se déconnecter","ui.theme.to_light":"Mode clair","ui.theme.to_dark":"Mode sombre","ui.views":"Vues","ui.location":"Établissement",
+"ui.menu":"Menu","ui.skip":"Aller au contenu","ui.language":"Langue","ui.signout":"Se déconnecter","ui.theme.to_light":"Mode clair","ui.theme.to_dark":"Mode sombre","ui.views":"Vues","ui.location":"Établissement",
 "nav.floor":"Salle en direct","nav.host":"Accueil","nav.tv":"TV cuisine","nav.settings":"Réglages",
 "login.title":"Connexion","login.email":"E-mail","login.password":"Mot de passe","login.totp":"Code d'authentification","login.totp_hint":"6 chiffres de votre appli. Seulement si la double authentification est activée.","login.submit":"Se connecter","login.busy":"Connexion…",
 "login.err.invalid":"L'e-mail et le mot de passe ne correspondent pas. Réessayez.","login.err.2fa":"Saisissez le code à 6 chiffres de votre appli.","login.err.locked":"Trop de tentatives. Compte en pause quelques minutes.","login.err.rate":"Trop de tentatives. Patientez une minute.","login.err.unverified":"Vérifiez d'abord votre e-mail.","login.err.net":"Impossible de joindre TableSight.",

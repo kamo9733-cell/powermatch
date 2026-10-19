@@ -16,13 +16,13 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
-import uvicorn  # noqa: E402
-from fastapi.responses import RedirectResponse  # noqa: E402
-from fastapi.staticfiles import StaticFiles  # noqa: E402
-from fastapi.testclient import TestClient  # noqa: E402
+import uvicorn
+from fastapi.responses import RedirectResponse
+from fastapi.staticfiles import StaticFiles
+from fastapi.testclient import TestClient
 
-from tablesight.platform import security  # noqa: E402
-from tablesight.platform.app import Outbox, create_app  # noqa: E402
+from tablesight.platform import security
+from tablesight.platform.app import Outbox, create_app
 
 DEMO_PASSWORD = "demo-password-123"
 OWNER, GM = "owner@demo.tablesight.test", "gm@demo.tablesight.test"
@@ -45,11 +45,46 @@ def _events(now: float) -> list[dict]:
             for i, (tb, k, m, d) in enumerate(spec)]
 
 
+WEB_CSP = ("default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; "
+           "frame-ancestors 'none'; base-uri 'none'; form-action 'self'")
+
+
+class _WebHeaders:
+    """The API stamps `default-src 'none'` on every response (correct for JSON). The web assets therefore live
+    OUTSIDE the API app, here as a sibling route with their own CSP. Production: serve web/ from a static host
+    / reverse-proxy path with this same policy."""
+
+    def __init__(self, app):
+        self.app = app
+
+    async def __call__(self, scope, receive, send):
+        async def send2(m):
+            if m["type"] == "http.response.start":
+                hs = [(k, v) for k, v in m["headers"] if k.lower() not in (b"content-security-policy", b"cache-control")]
+                m = {**m, "headers": hs + [(b"content-security-policy", WEB_CSP.encode()), (b"cache-control", b"no-cache"),
+                                           (b"x-content-type-options", b"nosniff"), (b"referrer-policy", b"no-referrer")]}
+            await send(m)
+        await self.app(scope, receive, send2)
+
+
+def _compose(api):
+    from starlette.applications import Starlette
+    from starlette.routing import Mount, Route
+    web = StaticFiles(directory=str(ROOT / "web"), html=True)
+    outer = Starlette(routes=[
+        Route("/", lambda r: RedirectResponse("/app/")),
+        Mount("/app", app=_WebHeaders(web)),
+        Mount("/", app=api),
+    ])
+    outer.state.api = api
+    return outer
+
+
 def build_demo(stale: bool = False):
     """Return (app, info). stale=True ages the device heartbeat so the UI shows its stale state."""
     ob = Outbox()
-    app = create_app(outbox=ob)
-    c = TestClient(app)
+    api = create_app(outbox=ob)
+    c = TestClient(api)
 
     def login(email, totp=None):
         r = c.post("/login", json={"email": email, "password": DEMO_PASSWORD, "totp": totp})
@@ -75,25 +110,23 @@ def build_demo(stale: bool = False):
     c.post("/edge/events", json=_events(now), headers=hd).raise_for_status()
     c.post("/edge/heartbeat", params={"version": "demo"}, json={"fps": 12}, headers=hd).raise_for_status()
     if stale:
-        app.state.db.execute("UPDATE devices SET last_seen=?", (now - 600,))
-        app.state.db.commit()
+        api.state.db.execute("UPDATE devices SET last_seen=?", (now - 600,))
+        api.state.db.commit()
 
-    web = ROOT / "web"
-    app.mount("/app", StaticFiles(directory=str(web), html=True), name="web")
-    app.add_api_route("/", lambda: RedirectResponse("/app/"), include_in_schema=False)
+    outer = _compose(api)
 
     if not stale:  # keep the camera box "alive" while the demo runs
         def beat():
             while True:
                 time.sleep(20)
                 try:
-                    app.state.db.execute("UPDATE devices SET last_seen=?", (time.time(),))
-                    app.state.db.commit()
-                except Exception:
+                    api.state.db.execute("UPDATE devices SET last_seen=?", (time.time(),))
+                    api.state.db.commit()
+                except Exception:  # noqa: BLE001
                     return
         threading.Thread(target=beat, daemon=True).start()
     info = {"owner": OWNER, "gm": GM, "password": DEMO_PASSWORD, "totp_secret": secret, "location_id": lid}
-    return app, info
+    return outer, info
 
 
 def free_port() -> int:

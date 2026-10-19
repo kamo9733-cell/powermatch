@@ -104,7 +104,7 @@ def test_event_validation_limits(env):
     h = signup(c, ob, "a@x.com")
     lid = mkloc(c, h)
     dev, _ = pair(c, h, lid)
-    post = lambda body: c.post("/edge/events", json=body, headers=dev)  # noqa: E731
+    post = lambda body: c.post("/edge/events", json=body, headers=dev)
     assert post([ev(1)]).json() == {"accepted": 1, "duplicates": 0}
     r = post([ev(2, t=clk.t + 86_400), ev(3), ev(4, t=-5)]).json()
     assert r["accepted"] == 1 and r["rejected"] == 2  # future / negative timestamps never stored
@@ -384,3 +384,28 @@ def test_audit_survives_org_data_deletion_and_is_tenant_scoped(env):
     c.delete("/org/data", params={"confirm": "DELETE"}, headers=a)
     assert "org.data_deleted" in actions(c, a)
     assert "org.data_deleted" not in actions(c, b)
+
+
+def test_deeply_nested_json_is_a_400_not_a_crash(env):
+    c, ob, *_ = env
+    h = signup(c, ob, "a@x.com")
+    bomb = b"[" * 200_000 + b"]" * 200_000
+    r = c.post("/corrections", params={"location_id": "x", "kind": "k"}, headers={**h, "content-type": "application/json"}, content=bomb)
+    assert r.status_code in (400, 422)
+    assert c.get("/locations", headers=h).status_code == 200  # server still healthy
+
+
+def test_file_database_is_owner_only_and_old_schemas_are_migrated(tmp_path):
+    import sqlite3
+    path = tmp_path / "old.db"
+    old = sqlite3.connect(path)
+    old.executescript("CREATE TABLE sessions(token_hash TEXT PRIMARY KEY, user_id TEXT, org_id TEXT, expires REAL);"
+                      "CREATE TABLE invites(token_hash TEXT PRIMARY KEY, org_id TEXT, email TEXT, role TEXT,"
+                      " location_id TEXT, expires REAL);")
+    old.commit()
+    old.close()
+    ob = Outbox()
+    c = TestClient(create_app(str(path), outbox=ob))
+    h = signup(c, ob, "a@x.com")
+    assert c.get("/sessions", headers=h).status_code == 200
+    assert (path.stat().st_mode & 0o077) == 0

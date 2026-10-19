@@ -1,4 +1,7 @@
-"""Run: python -m tablesight.platform  (env: TABLESIGHT_DB, TABLESIGHT_VAULT_KEY, PORT)."""
+"""Run: python -m tablesight.platform
+env: TABLESIGHT_DB, TABLESIGHT_VAULT_KEY, PORT, HOST (default 0.0.0.0 because deploy/Dockerfile relies on it; bind 127.0.0.1 behind a TLS proxy),
+     TABLESIGHT_ALLOW_SELF_SERVE_PLAN=1 (dev only: lets an owner upgrade their own plan without paying).
+Uvicorn's access log is OFF: legacy clients may still pass tokens/passwords in query strings."""
 import os
 
 import uvicorn
@@ -8,5 +11,6 @@ from .app import create_app
 key = os.environ.get("TABLESIGHT_VAULT_KEY")
 if not key:
     raise SystemExit("Set TABLESIGHT_VAULT_KEY (generate: python -c 'from cryptography.fernet import Fernet;print(Fernet.generate_key().decode())')")
-app = create_app(os.environ.get("TABLESIGHT_DB", "tablesight.db"), key.encode())
-uvicorn.run(app, host="0.0.0.0", port=int(os.environ.get("PORT", "8080")))
+app = create_app(os.environ.get("TABLESIGHT_DB", "tablesight.db"), key.encode(),
+                 allow_self_serve_plan=os.environ.get("TABLESIGHT_ALLOW_SELF_SERVE_PLAN") == "1")
+uvicorn.run(app, host=os.environ.get("HOST", "0.0.0.0"), port=int(os.environ.get("PORT", "8080")), access_log=False)

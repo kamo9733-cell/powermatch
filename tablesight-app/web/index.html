@@ -12,12 +12,12 @@
 <header class="top" id="top" hidden>
   <div class="brand"><svg class="logo" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="12" cy="12" r="4" fill="currentColor"/></svg><span>TableSight</span></div>
   <nav id="modes" aria-label="Views"></nav>
-  <div class="tools">
+  <details class="tools" id="menu"><summary class="btn ghost" data-i18n="ui.menu">Menu</summary><div class="tray">
     <label class="sr" for="lang" data-i18n="ui.language">Language</label>
     <select id="lang"><option value="en">English</option><option value="ar">العربية</option><option value="es">Español</option><option value="de">Deutsch</option><option value="fr">Français</option></select>
     <button class="btn ghost" id="theme" type="button"></button>
     <button class="btn ghost" id="logout" type="button" data-i18n="ui.signout">Sign out</button>
-  </div>
+  </div></details>
 </header>
 <div id="demo" class="demo" hidden role="note"></div>
 <main id="main" tabindex="-1"></main>

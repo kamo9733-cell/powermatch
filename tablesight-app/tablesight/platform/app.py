@@ -117,7 +117,7 @@ class Hardening:
         except _TooLarge:
             if not started:
                 await reply(413, "request too large")
-        except Exception:  # noqa: BLE001 - last resort: log server side, tell the client nothing
+        except Exception:  # last resort: log server side, tell the client nothing
             log.exception("unhandled error")
             if not started:
                 await reply(500, "internal error")

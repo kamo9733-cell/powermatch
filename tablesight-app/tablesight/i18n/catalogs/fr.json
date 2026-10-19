@@ -1,0 +1,10 @@
+{
+ "alert.neglect": "Table {table} : pas de passage depuis {minutes} min",
+ "alert.digest": "{n} tables à visiter : {tables}",
+ "state.uncertain": "Incertain — vue de la caméra peu claire",
+ "state.stale": "Caméra hors ligne — données peut-être périmées",
+ "state.seated": "Occupée",
+ "state.empty": "Libre",
+ "state.needs_clean": "À nettoyer",
+ "coach.tip": "Les tables qui attendent le plus apparaissent en premier pour équilibrer le service en équipe."
+}

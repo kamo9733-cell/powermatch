@@ -1,0 +1,17 @@
+name: ci
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    defaults: { run: { working-directory: tablesight-app } }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -e . fastapi httpx cryptography pytest ruff pip-licenses pip-audit
+      - run: ruff check .
+      - run: pytest -q          # includes tenant-isolation tests and the hero-loop eval gate
+      - run: pip-audit || true  # advisory until baseline is clean
+      - run: python scripts/gen_notices.py > THIRD_PARTY_NOTICES.md
+      - uses: actions/upload-artifact@v4
+        with: { name: notices, path: tablesight-app/THIRD_PARTY_NOTICES.md }

@@ -1,0 +1,10 @@
+{
+ "alert.neglect": "Mesa {table}: sin atención desde hace {minutes} min",
+ "alert.digest": "{n} mesas necesitan atención: {tables}",
+ "state.uncertain": "No estoy seguro — la vista de la cámara no es clara",
+ "state.stale": "Cámara sin conexión — los datos pueden estar desactualizados",
+ "state.seated": "Ocupada",
+ "state.empty": "Libre",
+ "state.needs_clean": "Necesita limpieza",
+ "coach.tip": "Las mesas que más esperan aparecen primero para repartir el trabajo en equipo."
+}

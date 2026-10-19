@@ -1,0 +1,10 @@
+{
+ "alert.neglect": "Table {table}: no check-in for {minutes} min",
+ "alert.digest": "{n} tables need a check-in: {tables}",
+ "state.uncertain": "Not sure — camera view unclear",
+ "state.stale": "Camera offline — data may be out of date",
+ "state.seated": "Seated",
+ "state.empty": "Empty",
+ "state.needs_clean": "Needs cleaning",
+ "coach.tip": "Tables waiting longest are shown first so the team can balance the floor together."
+}

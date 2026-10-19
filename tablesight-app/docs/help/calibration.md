@@ -1,0 +1,2 @@
+# Calibrating your floor
+Pick 4 points on the floor visible in the camera (e.g. table legs) and mark where they are on your floor plan. Draw each table as a polygon. Draw windows, mirrors and the street as **Exclude** zones so people there never count. Save layouts as presets ("Lunch", "Event"). Tip: tilt the camera so tables aren't hidden behind pillars; the angle score tells you if a view is weak.

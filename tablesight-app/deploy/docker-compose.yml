@@ -1,0 +1,14 @@
+# Fully self-hosted. Nothing here calls a third-party cloud.
+services:
+  api:
+    build: { context: .., dockerfile: deploy/Dockerfile }
+    environment:
+      TABLESIGHT_VAULT_KEY: ${TABLESIGHT_VAULT_KEY:?generate one, see README}
+    volumes: [ "tsdata:/data" ]
+    restart: unless-stopped
+  caddy:               # Apache-2.0 reverse proxy, automatic TLS
+    image: caddy:2
+    ports: [ "80:80", "443:443" ]
+    volumes: [ "./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy:/data" ]
+    depends_on: [ api ]
+volumes: { tsdata: {}, caddy: {} }

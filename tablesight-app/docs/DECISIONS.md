@@ -21,3 +21,12 @@
 
 ## D4. Alert policy
 - Per-table cap and per-recipient spacing. Suppressed alerts are held and sent as one digest; held alerts are discarded if staff arrives first.
+
+## D5. Platform stack (2026-10-19)
+- **Choice:** FastAPI (MIT) + Pydantic (MIT) + SQLite now (SQL kept Postgres-portable) + Caddy (Apache-2.0) for TLS; stdlib scrypt/HMAC for auth, `cryptography` (Apache-2.0/BSD) for Fernet. All permissive, all self-hostable, zero cloud calls.
+- **Why SQLite first:** fastest vertical slice with tenant-isolation tests; single-node limit is recorded in LAUNCH_CHECKLIST.
+- **Revisit when:** more than one API node, or write contention at rush; move to Postgres (PostgreSQL licence) with row-level security as defence in depth.
+- **Tenancy rule:** org_id comes only from the session/device token; unknown and foreign ids both return 404.
+
+## D6. Cross-camera fusion is geometry-only
+Floor-plan distance between detections from different cameras; no appearance re-ID (privacy: docs/legal/PRIVACY_ANALYSIS.md).

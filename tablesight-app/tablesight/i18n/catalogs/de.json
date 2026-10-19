@@ -1,0 +1,10 @@
+{
+ "alert.neglect": "Tisch {table}: seit {minutes} Min. nicht betreut",
+ "alert.digest": "{n} Tische brauchen Betreuung: {tables}",
+ "state.uncertain": "Unsicher — Kamerasicht unklar",
+ "state.stale": "Kamera offline — Daten evtl. veraltet",
+ "state.seated": "Besetzt",
+ "state.empty": "Frei",
+ "state.needs_clean": "Muss gereinigt werden",
+ "coach.tip": "Am längsten wartende Tische stehen oben, damit das Team gemeinsam ausgleichen kann."
+}

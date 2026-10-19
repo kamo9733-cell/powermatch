@@ -1,6 +1,7 @@
 """Browser tests for web/ (Playwright + chromium). Skips gracefully when either is unavailable."""
 import glob
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -15,7 +16,24 @@ try:
 except Exception:  # noqa: BLE001  # pragma: no cover
     sync_playwright = None
 
-CHROME = (sorted(glob.glob("/opt/pw-browsers/chromium-*/chrome-linux*/chrome")) or [None])[-1]
+def _find_chrome():
+    found = sorted(glob.glob("/opt/pw-browsers/chromium-*/chrome-linux*/chrome"))
+    if found:
+        return found[-1]
+    if sync_playwright is None:
+        return None
+    try:  # Playwright's own managed browser (what `playwright install chromium` provides, e.g. in CI)
+        with sync_playwright() as p:
+            path = p.chromium.executable_path
+        return path if path and os.path.exists(path) else None
+    except Exception:  # noqa: BLE001  # any launch/probe failure means 'not available'
+        return None
+
+
+CHROME = _find_chrome()
+
+if os.environ.get("REQUIRE_UI_TESTS") and (sync_playwright is None or not CHROME):
+    raise RuntimeError("REQUIRE_UI_TESTS=1 but playwright/chromium not found; UI tests must not skip in CI")
 pytestmark = pytest.mark.skipif(sync_playwright is None or not CHROME, reason="playwright/chromium not available")
 
 PW = "demo-password-123"

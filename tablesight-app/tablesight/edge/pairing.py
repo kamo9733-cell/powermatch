@@ -35,8 +35,10 @@ def write_secret(path: Path, text: str) -> None:
 
 
 def pair(api: str, code: str, store: Path, post: Post = urllib_post) -> dict:
-    from urllib.parse import quote
-    if not api.startswith("https://") and not api.startswith("http://localhost"):
+    from urllib.parse import quote, urlsplit
+    u = urlsplit(api)
+    loopback = u.scheme == "http" and u.hostname in {"localhost", "127.0.0.1", "::1"}
+    if u.scheme != "https" and not loopback:
         raise PairingError("API url must be https:// (token would travel in clear text)")
     status, body = post(f"{api.rstrip('/')}/edge/pair?code={quote(code, safe='')}")
     if status != 200 or "token" not in body or "device_id" not in body:

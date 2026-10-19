@@ -1,16 +1,23 @@
-name: ci
-on: [push, pull_request]
+name: tablesight
+on:
+  push:
+    paths: ["tablesight-app/**", ".github/workflows/tablesight.yml"]
+  pull_request:
+    paths: ["tablesight-app/**", ".github/workflows/tablesight.yml"]
 jobs:
   test:
     runs-on: ubuntu-latest
     defaults: { run: { working-directory: tablesight-app } }
+    env:
+      REQUIRE_UI_TESTS: "1"   # browser tests must run in CI, never silently skip
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with: { python-version: "3.12" }
-      - run: pip install -e . fastapi httpx cryptography pytest ruff pip-licenses pip-audit
+      - run: pip install -e ".[dev]"
+      - run: playwright install --with-deps chromium
       - run: ruff check .
-      - run: pytest -q          # includes tenant-isolation tests and the hero-loop eval gate
+      - run: pytest -q -rs     # tenant isolation, security, hero-loop and tracker gates, browser UI
       - run: pip-audit || true  # advisory until baseline is clean
       - run: python scripts/gen_notices.py > THIRD_PARTY_NOTICES.md
       - uses: actions/upload-artifact@v4

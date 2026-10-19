@@ -6,7 +6,10 @@ requires-python = ">=3.11"
 dependencies = []
 
 [project.optional-dependencies]
-dev = ["pytest", "ruff"]
+platform = ["fastapi", "uvicorn", "cryptography", "httpx"]
+eval = ["numpy"]
+dev = ["pytest", "ruff", "numpy", "fastapi", "uvicorn", "cryptography", "httpx", "playwright",
+       "pip-audit"]
 
 [tool.setuptools.packages.find]
 include = ["tablesight*"]

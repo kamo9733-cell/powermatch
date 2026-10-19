@@ -15,6 +15,8 @@ class AlertEngine:
     _held: dict[str, Event] = field(default_factory=dict)
 
     def process(self, ev: Event) -> dict | None:
+        if ev.kind in ("seated", "vacated"):
+            self._count.pop(ev.table, None)  # the per-table cap is per visit, not for the table's lifetime
         if ev.kind in ("staff_visit", "vacated"):
             self._held.pop(ev.table, None)  # resolved while waiting: never send stale alerts
             return None
@@ -22,14 +24,14 @@ class AlertEngine:
             return None
         if self._count.get(ev.table, 0) >= self.tpl.max_alerts_per_table:
             return None
-        if ev.t - self._last_sent < self.min_gap_s:
+        if 0 <= ev.t - self._last_sent < self.min_gap_s:  # negative = clock jumped back: don't hold forever
             self._held[ev.table] = ev  # held for the digest, never lost
             return None
         return self._send([ev], ev.t)
 
     def flush(self, now: float) -> dict | None:
         """Emit one digest for tables held back during a rush."""
-        if not self._held or now - self._last_sent < self.min_gap_s:
+        if not self._held or 0 <= now - self._last_sent < self.min_gap_s:
             return None
         evs = list(self._held.values())
         self._held.clear()

@@ -34,7 +34,7 @@ CREATE TABLE IF NOT EXISTS devices(id TEXT PRIMARY KEY, org_id TEXT, location_id
 CREATE TABLE IF NOT EXISTS pairing(code_hash TEXT PRIMARY KEY, org_id TEXT, location_id TEXT, expires REAL);
 CREATE INDEX IF NOT EXISTS ses_user ON sessions(user_id);
 CREATE TABLE IF NOT EXISTS events(org_id TEXT, location_id TEXT, event_id TEXT, t REAL, table_id TEXT,
-  kind TEXT, detail TEXT, PRIMARY KEY(org_id, event_id));
+  kind TEXT, detail TEXT, PRIMARY KEY(org_id, location_id, event_id));
 CREATE TABLE IF NOT EXISTS audit(id INTEGER PRIMARY KEY AUTOINCREMENT, org_id TEXT, user_id TEXT,
   action TEXT, target TEXT, t REAL, ip TEXT);
 CREATE TABLE IF NOT EXISTS webhooks(id TEXT PRIMARY KEY, org_id TEXT, url TEXT, secret TEXT);

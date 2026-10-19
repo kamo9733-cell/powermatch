@@ -63,6 +63,7 @@ class Zone:
     zone_id: str
     polygon: list[Point]   # floor-plan coordinates
     kind: str = "table"    # table | queue | entrance | exclude (windows, mirrors, street)
+    section: str | None = None  # server section this table belongs to (stamped onto events)
 
     def contains(self, p: Point) -> bool:
         return point_in_polygon(p, self.polygon)

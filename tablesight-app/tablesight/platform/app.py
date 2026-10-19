@@ -698,10 +698,12 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         throttle("ingest_dev", d["id"])
         horizon = now() + FUTURE_SLACK_S
         new = dup = rej = 0
+        rejected_ids: list[str] = []
         with db.tx():
             for e in events:
                 if e.t < 0 or e.t > horizon:  # clock-skewed or hostile timestamps never reach the store
                     rej += 1
+                    rejected_ids.append(e.event_id)  # tell the edge WHICH ones, so it can park, not delete, them
                     continue
                 cur = db.execute("INSERT OR IGNORE INTO events(org_id,location_id,event_id,t,table_id,kind,detail) VALUES(?,?,?,?,?,?,?)",
                                  (d["org_id"], d["location_id"], e.event_id, e.t, e.table_id, e.kind, json.dumps(e.detail)))
@@ -711,6 +713,7 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         res = {"accepted": new, "duplicates": dup}
         if rej:
             res["rejected"] = rej
+            res["rejected_ids"] = rejected_ids[:MAX_BATCH]
         return res
 
     @app.post("/edge/heartbeat")
@@ -745,10 +748,14 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         return {"ok": True}
 
     # ---- events, export, analytics ----------------------------------------------------------
-    def fetch_events(ctx: dict, location_id: str, since: float = 0, limit: int = 5000) -> list[dict]:
+    def fetch_events(ctx: dict, location_id: str, since: float = 0, limit: int = 5000,
+                     event_id: str | None = None) -> list[dict]:
+        """Newest `limit` events (returned oldest-first). Section scoping applies to every caller."""
         loc_ok(ctx, location_id)
         q = "SELECT event_id,t,table_id,kind,detail FROM events WHERE org_id=? AND location_id=? AND t>=?"
         a: list = [ctx["org_id"], location_id, since]
+        if event_id is not None:
+            q, a = q + " AND event_id=?", a + [event_id]
         if rbac.can(ctx["role"], "events.read"):
             pass
         elif rbac.can(ctx["role"], "events.read.own_section"):
@@ -757,8 +764,8 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
             q, a = q + " AND json_extract(detail,'$.section')=?", a + [ctx["section"]]
         else:
             raise HTTPException(403, "missing permission events.read")
-        rows = db.execute(q + " ORDER BY t LIMIT ?", a + [limit]).fetchall()
-        return [dict(r, detail=json.loads(r["detail"])) for r in rows]
+        rows = db.execute(q + " ORDER BY t DESC LIMIT ?", a + [limit]).fetchall()
+        return [dict(r, detail=json.loads(r["detail"])) for r in reversed(rows)]
 
     @app.get("/events")
     def events_list(location_id: str, since: float = 0, limit: Annotated[int, Query(ge=1, le=5000)] = 1000,
@@ -810,8 +817,7 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         because the lookup goes through the same scoped query as GET /events."""
         need(ctx, "alerts.ack")
         loc_ok(ctx, location_id)
-        evs = [e for e in fetch_events(ctx, location_id, 0, MAX_EXPORT_ROWS)
-               if e["event_id"] == event_id and e["kind"] == "needs_attention"]
+        evs = [e for e in fetch_events(ctx, location_id, 0, 1, event_id=event_id) if e["kind"] == "needs_attention"]
         if not evs:
             raise HTTPException(404, "alert not found")
         with db.tx():
@@ -820,7 +826,8 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
             if not dup:
                 db.execute("INSERT INTO corrections(org_id,location_id,kind,payload,consent_training,t) VALUES(?,?,?,?,0,?)",
                            (ctx["org_id"], location_id, "ack",
-                            json.dumps({"event_id": event_id, "by": ctx["user_id"]}), now()))
+                            json.dumps({"event_id": event_id, "by": ctx["user_id"], "table": evs[0]["table_id"],
+                                        "t": now()}), now()))
         audit(ctx["org_id"], ctx["user_id"], "alert.ack", event_id)
         return {"ok": True, "already": bool(dup)}
 
@@ -868,4 +875,6 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
         bill.set_plan(ctx["org_id"], plan)
         return {"plan": plan}
 
+    from . import retention
+    app.state.purge = lambda: retention.purge(db, now())
     return app

@@ -48,6 +48,9 @@ class Table:
     _absent_since: float | None = None
     _staff_since: float | None = None
     _flagged: bool = False
+    _blind: bool = False                 # camera stale / low confidence: we know nothing
+    _blind_start: float | None = None
+    _last_fresh_t: float | None = None
     _cand_party: int = 0
     _cand_n: int = 0
     events: list[Event] = field(default_factory=list)
@@ -58,15 +61,30 @@ class Table:
     def step(self, o: Observation) -> None:
         if o.stale or o.confidence < MIN_CONFIDENCE:
             # Honesty rule: no guesses. Pause all timers' inputs and say so.
-            self._pending_since = self._absent_since = None
-            if not self.events or self.events[-1].kind != "uncertain":
+            self._pending_since = self._absent_since = self._staff_since = None
+            if not self._blind:
+                self._blind = True
+                self._blind_start = self._last_fresh_t if self._last_fresh_t is not None else o.t
                 self._emit(o.t, "uncertain", stale=o.stale, confidence=o.confidence)
             return
+        if self._blind:
+            self._recover(o.t)
+        self._last_fresh_t = o.t
         self._track_staff(o)
         if self.state is State.SEATED:
             self._step_seated(o)
         else:
             self._step_unseated(o)
+
+    def _recover(self, t: float) -> None:
+        """Time we were blind must not count as neglect or as a staff visit: shift the clocks forward."""
+        gap = t - (self._blind_start if self._blind_start is not None else t)
+        self._blind, self._blind_start = False, None
+        for name in ("seated_at", "last_staff_t", "vacated_at"):
+            v = getattr(self, name)
+            if v is not None:
+                setattr(self, name, v + gap)
+        self._emit(t, "uncertain_end", blind_s=gap)
 
     def _track_staff(self, o: Observation) -> None:
         if o.staff > 0:

@@ -61,9 +61,29 @@ def test_neglected_table_is_alerted_attended_table_is_not():
     assert "staff_visit" in {e.kind for e in events if e.table == "T2"}
 
 
-def test_people_in_window_exclusion_zone_never_create_visits():
-    events, alerts = simulate({"X": (0, 2000, (1.0, 9.0))}, {})
-    assert events == [] and alerts == []
+def test_people_in_overlapping_exclusion_zone_never_create_visits():
+    """The exclusion zone OVERLAPS table T3, so only the exclusion logic keeps these guests out."""
+    zones = [Zone("T3", [(0, 6), (3, 6), (3, 9), (0, 9)]), Zone("glass", [(0, 8), (10, 8), (10, 10), (0, 10)], "exclude")]
+    tpl = get_template("casual_dining")
+    fp = FloorPipeline(tpl, H, zones, trained())
+    out = []
+    for t in range(1500):
+        out += fp.step(float(t), [(RawDet(person(1.0, 8.5), .9), SKIN)])   # inside T3 AND behind the glass
+    assert out == []
+    fp2 = FloorPipeline(tpl, H, [zones[0]], trained())                      # without the exclusion: a visit appears
+    out2 = []
+    for t in range(1500):
+        out2 += fp2.step(float(t), [(RawDet(person(1.0, 8.5), .9), SKIN)])
+    assert "seated" in {e.kind for e in out2}
+
+
+def test_events_carry_section_from_zone_config():
+    zones = [Zone("T1", [(0, 0), (3, 0), (3, 3), (0, 3)], section="A")]
+    fp = FloorPipeline(get_template("casual_dining"), H, zones, trained())
+    out = []
+    for t in range(60):
+        out += fp.step(float(t), [(RawDet(person(1.0, 2.0), .9), SKIN)])
+    assert out and all(e.detail["section"] == "A" for e in out)
 
 
 def test_untrained_venue_makes_no_confident_alerts():
@@ -73,6 +93,7 @@ def test_untrained_venue_makes_no_confident_alerts():
     for t in range(1500):
         out += fp.step(float(t), [(RawDet(person(1.0, 2.0), .9), SKIN)])
     assert not [e for e in out if e.kind in ("seated", "needs_attention")]
+    assert {e.kind for e in out} <= {"uncertain"} and out, "unknown roles must surface as 'uncertain', not silence"
 
 
 def test_stale_camera_freezes_logic():

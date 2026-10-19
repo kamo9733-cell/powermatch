@@ -52,4 +52,6 @@ class FloorPipeline:
             # unknown-role people lower confidence rather than being guessed as guests
             conf = 0.4 if unknown_in_zone[k] and not counts[k][0] else 1.0
             tb.step(Observation(t, counts[k][0], counts[k][1], conf, stale))
-        return [e for k, tb in self.tables.items() for e in tb.events[before[k]:]]
+        sec = {z.zone_id: z.section for z in self.zones}
+        return [Event(e.t, e.table, e.kind, {**e.detail, **({"section": sec[k]} if sec.get(k) else {})})
+                for k, tb in self.tables.items() for e in tb.events[before[k]:]]

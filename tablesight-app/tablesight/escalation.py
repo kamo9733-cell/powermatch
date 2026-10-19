@@ -232,6 +232,7 @@ class AlertRouter:
         self._held: dict[str, dict[str, float]] = {}
         self._last: dict[str, float] = {}
         self._live: dict[str, str] = {}  # table -> live alert id
+        self._members: dict[str, set[str]] = {}  # alert id -> tables still waiting on it
         self._n = 0
         self.stats = {"live": 0, "digests": 0, "merged": 0, "dropped": 0}
 
@@ -241,6 +242,7 @@ class AlertRouter:
         d = self.esc.start(aid, section, t, tables)
         if d:
             self._last[section] = t
+            self._members[aid] = set(tables)
             for tb in tables:
                 self._live[tb] = aid
         return d
@@ -280,4 +282,8 @@ class AlertRouter:
             held.pop(table, None)
         aid = self._live.pop(table, None)
         if aid:
-            self.esc.resolve(aid, t)
+            left = self._members.get(aid, set())
+            left.discard(table)
+            if not left:  # a digest stays open until EVERY table in it is looked after
+                self._members.pop(aid, None)
+                self.esc.resolve(aid, t)

@@ -114,3 +114,57 @@ def test_single_frame_false_detection_does_not_inflate_party():
     spec = lambda t: (6 if t == 100 else 2, 0)
     tb = play(tpl, spec, 300)
     assert tb.party_size == 2
+
+
+def stale_obs(tb, t0, t1, guests=2, staff=0):
+    for t in range(t0, t1):
+        tb.step(Observation(float(t), guests, staff, stale=True))
+
+
+def test_camera_outage_time_does_not_count_as_neglect():
+    tpl = get_template("casual_dining")
+    tb = Table("T1", tpl)
+    for t in range(40):
+        tb.step(Observation(float(t), 2, 0))
+    stale_obs(tb, 40, 590)                       # ~9 min blind, longer than greet_alert_s
+    tb.step(Observation(590.0, 2, 0))
+    assert "needs_attention" not in kinds(tb)
+    assert "uncertain_end" in kinds(tb)
+    for t in range(591, 590 + int(tpl.greet_alert_s) + 5):  # now real unattended time accrues again
+        tb.step(Observation(float(t), 2, 0))
+    assert "needs_attention" in kinds(tb)
+
+
+def test_outage_does_not_fabricate_staff_visit():
+    tpl = get_template("casual_dining")
+    tb = Table("T1", tpl)
+    for t in range(41):
+        tb.step(Observation(float(t), 2, 1 if t >= 38 else 0))   # staff arrives just before the outage
+    stale_obs(tb, 41, 200)
+    tb.step(Observation(200.0, 2, 1))
+    assert kinds(tb).count("staff_visit") == 0
+
+
+def test_second_outage_is_recorded_too():
+    tb = Table("T1", get_template("casual_dining"))
+    for t in range(40):
+        tb.step(Observation(float(t), 2, 0))
+    stale_obs(tb, 40, 41)
+    tb.step(Observation(41.0, 2, 0))
+    stale_obs(tb, 42, 43)
+    assert kinds(tb).count("uncertain") == 2 and kinds(tb).count("uncertain_end") == 1
+
+
+def test_alert_cap_resets_each_visit_and_backwards_clock_does_not_wedge():
+    tpl = get_template("casual_dining")
+    eng = AlertEngine(tpl)
+    sent = 0
+    for visit in range(tpl.max_alerts_per_table + 2):
+        base = visit * 10_000
+        eng.process(Event(base, "A", "seated"))
+        sent += bool(eng.process(Event(base + 200, "A", "needs_attention", {"waited": 200, "first_visit": True})))
+        eng.process(Event(base + 900, "A", "vacated"))
+    assert sent == tpl.max_alerts_per_table + 2
+    eng2 = AlertEngine(tpl)
+    eng2.process(Event(50_000, "A", "needs_attention", {"waited": 200, "first_visit": True}))
+    assert eng2.process(Event(100, "B", "needs_attention", {"waited": 200, "first_visit": True}))  # clock jumped back

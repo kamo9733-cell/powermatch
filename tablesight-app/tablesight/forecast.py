@@ -96,7 +96,7 @@ def _day_ratios(history: History, days: list[int], weeks: int, min_n: int,
             if dd != d:
                 continue
             f = seasonal_naive(history, d, h, weeks=weeks, min_n=min_n, exclude=exclude)
-            if f.ok and f.point and f.point > 0:
+            if f.ok and f.point and f.point > 0 and math.isfinite(f.point) and math.isfinite(v):
                 num += v
                 den += f.point
         if den > 0:

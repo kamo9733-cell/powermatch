@@ -11,8 +11,10 @@ past midnight attributes 01:00 Saturday to Friday's business day.
 """
 from __future__ import annotations
 
+import math
 from dataclasses import dataclass
 from datetime import date, datetime
+from itertools import pairwise
 from statistics import median
 from zoneinfo import ZoneInfo
 
@@ -225,13 +227,13 @@ def shift_report(events: list[Event], *, alerts: list[dict] | None = None,
     dwells = [d for d in dwells_all if 0 < d <= max_dwell_s]
     greets = [v.staff_times[0] - v.seated_t for v in visits if v.staff_times]
     greets = [g for g in greets if g >= 0]
-    gaps = [b - a for v in visits for a, b in zip(v.staff_times, v.staff_times[1:], strict=False)]
+    gaps = [b - a for v in visits for a, b in pairwise(v.staff_times)]
     gaps = [g for g in gaps if g > 0]
     never_greeted = sum(1 for v in visits if not v.staff_times and v.dwell_s is not None)
 
     edges = sorted(greet_buckets_s)
-    labels = [f"<{int(edges[0])}s"] + [f"{int(a)}-{int(b)}s" for a, b in
-                                        zip(edges, edges[1:], strict=False)] + [f">={int(edges[-1])}s"]
+    labels = ([f"<{int(edges[0])}s"] + [f"{int(a)}-{int(b)}s" for a, b in pairwise(edges)]
+              + [f">={int(edges[-1])}s"])
     counts = [0] * len(labels)
     for g in greets:
         counts[sum(1 for x in edges if g >= x)] += 1
@@ -292,7 +294,7 @@ def compare_like_with_like(events: list[Event], target_day: int, *, tz: str = "U
     events), within the last ``weeks`` weeks and with at least ``min_n_per_day`` turns in the
     slice are used. Fewer than ``min_days`` such days -> refuses (``comparable`` False). The
     reference is the median of daily median dwells with the min-max range so the reader sees
-    natural day-to-day spread; a target inside that range is reported as 'within normal range'
+    natural day-to-day spread; a target inside that range (widened by 10% of the reference median) is reported as 'within normal range'
     rather than as better or worse.
     """
     if daypart is not None and daypart not in DAYPARTS:
@@ -328,7 +330,8 @@ def compare_like_with_like(events: list[Event], target_day: int, *, tz: str = "U
         return {**out, "comparable": False, "reason": "no turns on target day/daypart"}
     ref, lo, hi = median(ref_days), min(ref_days), max(ref_days)
     t_med = median(target)
-    verdict = ("within normal range" if lo <= t_med <= hi
+    margin = 0.1 * ref   # days with identical medians must not make 3% a "difference"
+    verdict = ("within normal range" if lo - margin <= t_med <= hi + margin
                else "slower than usual" if t_med > hi else "faster than usual")
     return {**out, "comparable": True, "target_median_s": t_med,
             "target_reliable": len(target) >= min_n_per_day,
@@ -363,8 +366,8 @@ def net_revenue(pos: list[PosEvent], window: tuple[float, float]) -> dict:
     for p in sorted(pos, key=lambda p: p.t):
         if not (lo <= p.t < hi):
             continue
-        if p.kind not in ("payment", "refund") or not (p.amount == p.amount) or p.amount < 0 \
-                or p.amount == float("inf"):
+        if p.kind not in ("payment", "refund") or not math.isfinite(p.amount) \
+                or p.amount < 0:
             rejected += 1
             continue
         key = (p.check_id, p.kind)

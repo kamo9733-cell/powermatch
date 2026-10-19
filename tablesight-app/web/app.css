@@ -62,7 +62,7 @@ label{display:block;font-weight:600;margin-block:12px 4px}
 .row .acts .btn{flex:1 1 140px}
 .row.attn{--c:var(--alert);border-color:var(--alert)}
 .row.ok{--c:var(--ok)}
-.row.unk{--c:var(--unk);border-style:dashed;opacity:.92}
+.row.unk{--c:var(--unk);border-style:dashed}
 .row.clean{--c:var(--clean)}
 .row.idle{--c:var(--idle);padding-block:8px}
 .row.idle .name{font-size:1.1rem}

@@ -3,6 +3,7 @@
 Headers sent:  X-Tablesight-Timestamp (unix seconds), X-Tablesight-Signature ("v1=<hex>"),
 X-Tablesight-Delivery (stable per alert+recipient, so receivers can de-duplicate retries).
 """
+
 from __future__ import annotations
 
 import hashlib

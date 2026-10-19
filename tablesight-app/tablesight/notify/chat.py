@@ -4,6 +4,7 @@ Both products accept a JSON body with "text" and "username". We deliberately use
 (no bold markers: Slack mrkdwn and Mattermost markdown disagree) and strip < > & so neither
 service can interpret link/mention syntax coming from table names.
 """
+
 from __future__ import annotations
 
 import json

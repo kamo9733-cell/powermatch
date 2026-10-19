@@ -228,7 +228,8 @@ class ByteTracker:
         m2, un_r, _ = self._match(recent, low, self.iou_min_low, False)
         for ti, di in m2:
             self._apply(recent[ti], low[di])
-        lost = [t for t in rest if t not in {recent[i] for i, _ in m2}]
+        rescued = {id(recent[i]) for i, _ in m2}
+        lost = [t for t in rest if id(t) not in rescued]
         for t in lost:
             t.missed += 1
             t.v = [t.v[0] * self.vel_decay, t.v[1] * self.vel_decay]

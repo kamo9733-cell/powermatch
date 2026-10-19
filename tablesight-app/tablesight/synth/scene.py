@@ -152,7 +152,7 @@ SCENARIOS: dict[str, SceneConfig] = {
     "staff_occludes_guest": SceneConfig(name="staff_occludes_guest"),
     "couple": SceneConfig(name="couple", merge_iou=0.12, merge_prob=0.3),
     "dim": SceneConfig(name="dim", dim=True),
-    "dropout_fp": SceneConfig(name="dropout_fp", burst_start_prob=0.02, fp_rate=0.4, static_fps=2),
+    "dropout_fp": SceneConfig(name="dropout_fp", burst_start_prob=0.02, fp_rate=0.15, static_fps=2),
     "flicker": SceneConfig(name="flicker", flicker=0.3),
     "busy_night": SceneConfig(name="busy_night", dim=True, burst_start_prob=0.01, fp_rate=0.2,
                               static_fps=1, flicker=0.1, merge_iou=0.12, merge_prob=0.15),

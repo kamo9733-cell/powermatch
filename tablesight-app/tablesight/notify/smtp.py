@@ -1,4 +1,5 @@
 """E-mail via stdlib smtplib. The SMTP connection factory is injected (no sockets in tests)."""
+
 from __future__ import annotations
 
 import smtplib
@@ -15,7 +16,9 @@ from .base import DeliveryResult, Message
 class SmtpNotifier:
     sender: str
     addresses: Mapping[str, str]  # staff id -> e-mail address
-    connect: Callable[[], Any]  # returns a context manager exposing send_message(), e.g. smtplib.SMTP
+    connect: Callable[
+        [], Any
+    ]  # returns a context manager exposing send_message(), e.g. smtplib.SMTP
     channel: str = "smtp"
 
     def build(self, msg: Message, to: str) -> EmailMessage:
@@ -24,7 +27,9 @@ class SmtpNotifier:
         em["To"] = to
         em["Subject"] = msg.title
         # Stable id per alert+recipient so a retried send is recognisable as the same message.
-        em["Message-ID"] = make_msgid(idstring=f"{msg.alert_id}.{msg.recipient}", domain="tablesight.invalid")
+        em["Message-ID"] = make_msgid(
+            idstring=f"{msg.alert_id}.{msg.recipient}", domain="tablesight.invalid"
+        )
         em["Auto-Submitted"] = "auto-generated"
         em.set_content(msg.body)
         return em

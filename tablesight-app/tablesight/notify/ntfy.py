@@ -6,6 +6,7 @@ documented HTTP publish API (POST <server>/<topic>, body = message, X-Title / X-
 X-Click headers, optional "Authorization: Bearer <token>"). If code were ever vendored we would
 rely on the Apache-2.0 option. The server is self-hostable, so no third party is required.
 """
+
 from __future__ import annotations
 
 import re

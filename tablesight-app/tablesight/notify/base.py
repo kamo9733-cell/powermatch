@@ -3,8 +3,10 @@
 Nothing here touches the network: channels build a request and hand it to a transport
 callable. Tests pass a fake transport; production passes `urllib_transport`.
 """
+
 from __future__ import annotations
 
+import urllib.error
 import urllib.request
 from collections.abc import Callable
 from dataclasses import dataclass, field
@@ -64,11 +66,9 @@ def urllib_transport(timeout_s: float = 10.0) -> HttpTransport:
     def send(req: HttpRequest) -> HttpResponse:
         if not req.url.lower().startswith(("https://", "http://")):
             raise TransportError("only http(s) URLs are allowed")
-        r = urllib.request.Request(  # noqa: S310 - scheme checked above
-            req.url, data=req.body, headers=req.headers, method=req.method
-        )
+        r = urllib.request.Request(req.url, data=req.body, headers=req.headers, method=req.method)
         try:
-            with urllib.request.urlopen(r, timeout=timeout_s) as resp:  # noqa: S310
+            with urllib.request.urlopen(r, timeout=timeout_s) as resp:
                 return HttpResponse(resp.status, resp.read())
         except urllib.error.HTTPError as e:
             return HttpResponse(e.code, e.read())

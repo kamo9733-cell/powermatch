@@ -4,6 +4,7 @@ SENT -> DELIVERED -> ACKED -> RESOLVED, with EXPIRED as the other terminal state
 Updates are idempotent and tolerate out-of-order receipts: repeating a transition, replaying an
 event id, or a late/backwards one (e.g. DELIVERED after ACKED) is ignored and returns False.
 """
+
 from __future__ import annotations
 
 from dataclasses import dataclass, field
@@ -56,7 +57,9 @@ class AckTracker:
     def for_alert(self, alert_id: str) -> list[DeliveryRecord]:
         return [r for r in self._records.values() if r.alert_id == alert_id]
 
-    def apply(self, delivery_id: str, to: DeliveryState, t: float, event_id: str | None = None) -> bool:
+    def apply(
+        self, delivery_id: str, to: DeliveryState, t: float, event_id: str | None = None
+    ) -> bool:
         """Returns True only if the state actually changed."""
         rec = self._records.get(delivery_id)
         if rec is None:

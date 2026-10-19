@@ -56,7 +56,7 @@ def _comparable(history: History, day: int, hour: int, weeks: int,
     out = []
     for d in ds:
         v = history[(d, hour)]
-        if v is not None and v == v and v >= 0:     # drop NaN / negative sensor garbage
+        if v is not None and math.isfinite(v) and v >= 0:     # drop NaN / negative sensor garbage
             out.append(float(v))
     return out
 

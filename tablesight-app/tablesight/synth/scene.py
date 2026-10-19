@@ -115,7 +115,9 @@ def _walker(rng, pid, role, f0, f1, n_way=3):
 
 def _people(name: str, rng, n: int) -> list[Person]:
     P = Person
-    j = lambda s=15: float(rng.uniform(-s, s))  # noqa: E731
+    def j(s: float = 15) -> float:
+        return float(rng.uniform(-s, s))
+
     if name in ("crossing", "dim"):
         a = P(1, "guest", _feat(rng, "guest"), [(10, 200 + j(), 400 + j()), (170, 1000, 560)])
         b = P(2, "guest", _feat(rng, "guest"), [(10, 1000 + j(), 400 + j()), (170, 200, 560)])

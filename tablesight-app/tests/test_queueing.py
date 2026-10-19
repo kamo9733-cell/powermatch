@@ -61,7 +61,6 @@ def test_littles_law_flags_ghost_visits():
     # open visits never closed (missed departures) inflate W relative to L only via boundary;
     # a large tolerance failure is expected when most visits are stuck open
     visits = [QueueVisit(i * 10.0, None) for i in range(30)]
-    visits += [QueueVisit(5000.0, 5001.0)] * 0
     r = littles_law_check(visits, (0, 300))
     assert r["ok"] is not None and "L" in r
 

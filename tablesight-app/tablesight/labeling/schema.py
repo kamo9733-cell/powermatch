@@ -28,7 +28,7 @@ SCOPES = {"eval", "training"}
 # reviews it and adds it here (and to docs/DATA.md).
 COMMERCIAL_OK = {"CC0-1.0", "CC-BY-4.0", "CC-BY-3.0", "Apache-2.0", "MIT", "BSD-2-Clause",
                  "BSD-3-Clause", "synthetic-cc0", "internal-owned", "customer-consent-agreement"}
-NON_COMMERCIAL = re.compile(r"(?:^|[-_])NC(?:[-_]|$)|non-?commercial|research-only", re.I)
+NON_COMMERCIAL = re.compile(r"(?:^|[-_])NC(?:[-_]|$)|non-?commercial|research-only", re.IGNORECASE)
 
 
 @dataclass(frozen=True)
@@ -43,7 +43,7 @@ class Issue:
 
 def _iso(v) -> bool:
     try:
-        datetime.fromisoformat(str(v).replace("Z", "+00:00"))
+        datetime.fromisoformat(str(v))
         return True
     except ValueError:
         return False
@@ -234,8 +234,7 @@ def read_jsonl(path: str | Path) -> tuple[list[dict], list[Issue]]:
 
 def write_jsonl(path: str | Path, recs: list[dict], append: bool = False) -> None:
     with open(path, "a" if append else "w", encoding="utf-8") as fh:
-        for r in recs:
-            fh.write(json.dumps(r, sort_keys=True, separators=(",", ":")) + "\n")
+        fh.writelines(json.dumps(r, sort_keys=True, separators=(",", ":")) + "\n" for r in recs)
 
 
 def summarise(recs: list[dict]) -> dict:

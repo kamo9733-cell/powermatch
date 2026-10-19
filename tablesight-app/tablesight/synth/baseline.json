@@ -1,0 +1,238 @@
+{
+  "note": "Synthetic scenes only; not real-world accuracy.",
+  "seeds": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9
+  ],
+  "synthetic": true,
+  "trackers": {
+    "bytetrack_style": {
+      "overall": {
+        "hota": 0.6761,
+        "id_switches": 2286,
+        "idf1": 0.7067,
+        "role_crossing_switches": 406,
+        "switch_rate_per_1k": 32.16,
+        "tp": 71081
+      },
+      "scenarios": {
+        "busy_night": {
+          "assa": 0.2593,
+          "deta": 0.5539,
+          "fn": 11336,
+          "fp": 3699,
+          "gt_boxes": 30000,
+          "hota": 0.378,
+          "id_switches": 851,
+          "idf1": 0.3887,
+          "pred_boxes": 22363,
+          "role_crossing_switches": 287,
+          "switch_rate_per_1k": 45.596,
+          "tp": 18664
+        },
+        "couple": {
+          "assa": 0.4778,
+          "deta": 0.6999,
+          "fn": 3514,
+          "fp": 9,
+          "gt_boxes": 11730,
+          "hota": 0.5724,
+          "id_switches": 1189,
+          "idf1": 0.6072,
+          "pred_boxes": 8225,
+          "role_crossing_switches": 51,
+          "switch_rate_per_1k": 144.718,
+          "tp": 8216
+        },
+        "crossing": {
+          "assa": 0.9011,
+          "deta": 0.8996,
+          "fn": 697,
+          "fp": 0,
+          "gt_boxes": 6940,
+          "hota": 0.9003,
+          "id_switches": 4,
+          "idf1": 0.9468,
+          "pred_boxes": 6243,
+          "role_crossing_switches": 2,
+          "switch_rate_per_1k": 0.641,
+          "tp": 6243
+        },
+        "dim": {
+          "assa": 0.6597,
+          "deta": 0.7808,
+          "fn": 1512,
+          "fp": 12,
+          "gt_boxes": 6940,
+          "hota": 0.7134,
+          "id_switches": 29,
+          "idf1": 0.7743,
+          "pred_boxes": 5440,
+          "role_crossing_switches": 16,
+          "switch_rate_per_1k": 5.343,
+          "tp": 5428
+        },
+        "dropout_fp": {
+          "assa": 0.4899,
+          "deta": 0.5078,
+          "fn": 3574,
+          "fp": 5915,
+          "gt_boxes": 13362,
+          "hota": 0.4959,
+          "id_switches": 145,
+          "idf1": 0.5063,
+          "pred_boxes": 15703,
+          "role_crossing_switches": 23,
+          "switch_rate_per_1k": 14.814,
+          "tp": 9788
+        },
+        "flicker": {
+          "assa": 0.6342,
+          "deta": 0.8572,
+          "fn": 1910,
+          "fp": 0,
+          "gt_boxes": 13362,
+          "hota": 0.7335,
+          "id_switches": 68,
+          "idf1": 0.7552,
+          "pred_boxes": 11452,
+          "role_crossing_switches": 27,
+          "switch_rate_per_1k": 5.938,
+          "tp": 11452
+        },
+        "staff_occludes_guest": {
+          "assa": 0.9396,
+          "deta": 0.9393,
+          "fn": 730,
+          "fp": 0,
+          "gt_boxes": 12020,
+          "hota": 0.9394,
+          "id_switches": 0,
+          "idf1": 0.9687,
+          "pred_boxes": 11290,
+          "role_crossing_switches": 0,
+          "switch_rate_per_1k": 0.0,
+          "tp": 11290
+        }
+      }
+    },
+    "greedy_iou": {
+      "overall": {
+        "hota": 0.59,
+        "id_switches": 2766,
+        "idf1": 0.5814,
+        "role_crossing_switches": 377,
+        "switch_rate_per_1k": 39.125,
+        "tp": 70696
+      },
+      "scenarios": {
+        "busy_night": {
+          "assa": 0.1991,
+          "deta": 0.5372,
+          "fn": 11294,
+          "fp": 4835,
+          "gt_boxes": 30000,
+          "hota": 0.3264,
+          "id_switches": 1188,
+          "idf1": 0.3175,
+          "pred_boxes": 23541,
+          "role_crossing_switches": 263,
+          "switch_rate_per_1k": 63.509,
+          "tp": 18706
+        },
+        "couple": {
+          "assa": 0.3387,
+          "deta": 0.6902,
+          "fn": 3628,
+          "fp": 9,
+          "gt_boxes": 11730,
+          "hota": 0.4803,
+          "id_switches": 1116,
+          "idf1": 0.4728,
+          "pred_boxes": 8111,
+          "role_crossing_switches": 36,
+          "switch_rate_per_1k": 137.744,
+          "tp": 8102
+        },
+        "crossing": {
+          "assa": 0.5877,
+          "deta": 0.8952,
+          "fn": 727,
+          "fp": 0,
+          "gt_boxes": 6940,
+          "hota": 0.7211,
+          "id_switches": 29,
+          "idf1": 0.6781,
+          "pred_boxes": 6213,
+          "role_crossing_switches": 6,
+          "switch_rate_per_1k": 4.668,
+          "tp": 6213
+        },
+        "dim": {
+          "assa": 0.405,
+          "deta": 0.7841,
+          "fn": 1490,
+          "fp": 11,
+          "gt_boxes": 6940,
+          "hota": 0.5609,
+          "id_switches": 61,
+          "idf1": 0.5424,
+          "pred_boxes": 5461,
+          "role_crossing_switches": 17,
+          "switch_rate_per_1k": 11.193,
+          "tp": 5450
+        },
+        "dropout_fp": {
+          "assa": 0.347,
+          "deta": 0.4747,
+          "fn": 3811,
+          "fp": 6761,
+          "gt_boxes": 13362,
+          "hota": 0.4009,
+          "id_switches": 257,
+          "idf1": 0.3817,
+          "pred_boxes": 16312,
+          "role_crossing_switches": 35,
+          "switch_rate_per_1k": 26.908,
+          "tp": 9551
+        },
+        "flicker": {
+          "assa": 0.5842,
+          "deta": 0.8526,
+          "fn": 1972,
+          "fp": 0,
+          "gt_boxes": 13362,
+          "hota": 0.7017,
+          "id_switches": 115,
+          "idf1": 0.7092,
+          "pred_boxes": 11390,
+          "role_crossing_switches": 20,
+          "switch_rate_per_1k": 10.097,
+          "tp": 11390
+        },
+        "staff_occludes_guest": {
+          "assa": 0.9391,
+          "deta": 0.9388,
+          "fn": 736,
+          "fp": 0,
+          "gt_boxes": 12020,
+          "hota": 0.9389,
+          "id_switches": 0,
+          "idf1": 0.9684,
+          "pred_boxes": 11284,
+          "role_crossing_switches": 0,
+          "switch_rate_per_1k": 0.0,
+          "tp": 11284
+        }
+      }
+    }
+  }
+}

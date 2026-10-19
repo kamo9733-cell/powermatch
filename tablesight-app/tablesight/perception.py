@@ -225,7 +225,7 @@ class ByteTracker:
         rest = [pool[i] for i in un_t]
         # stage 2: low-confidence detections rescue tracks that were seen recently
         recent = [t for t in rest if t.missed <= 2]
-        m2, un_r, _ = self._match(recent, low, self.iou_min_low, False)
+        m2, _, _ = self._match(recent, low, self.iou_min_low, False)
         for ti, di in m2:
             self._apply(recent[ti], low[di])
         rescued = {id(recent[i]) for i, _ in m2}

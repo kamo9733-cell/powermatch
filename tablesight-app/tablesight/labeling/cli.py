@@ -6,7 +6,7 @@ import json
 import sys
 
 from .corrections import import_corrections
-from .schema import (SOURCES, new_clip, read_jsonl, summarise, validate_record, write_jsonl)
+from .schema import SOURCES, new_clip, read_jsonl, summarise, validate_record, write_jsonl
 
 
 def _from_synth(args) -> dict:

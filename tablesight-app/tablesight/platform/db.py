@@ -14,7 +14,7 @@ CREATE TABLE IF NOT EXISTS orgs(id TEXT PRIMARY KEY, name TEXT, plan TEXT DEFAUL
   created_at REAL);
 CREATE TABLE IF NOT EXISTS users(id TEXT PRIMARY KEY, email TEXT UNIQUE, pw TEXT,
   verified INTEGER DEFAULT 0, totp_secret TEXT, failed INTEGER DEFAULT 0, locked_until REAL DEFAULT 0,
-  lang TEXT DEFAULT 'en');
+  lang TEXT DEFAULT 'en', totp_last INTEGER DEFAULT 0);
 CREATE TABLE IF NOT EXISTS memberships(user_id TEXT, org_id TEXT, role TEXT, location_id TEXT,
   section TEXT, PRIMARY KEY(user_id, org_id));
 CREATE TABLE IF NOT EXISTS sessions(token_hash TEXT PRIMARY KEY, user_id TEXT, org_id TEXT,
@@ -46,6 +46,7 @@ CREATE INDEX IF NOT EXISTS ev_loc ON events(org_id, location_id, t);
 
 # Columns added after the first release: applied to pre-existing database files.
 MIGRATIONS = {
+    "users": ["totp_last INTEGER DEFAULT 0"],
     "sessions": ["id TEXT", "created REAL", "last_seen REAL", "ip TEXT", "ua TEXT"],
     "invites": ["inviter TEXT", "section TEXT"],
     "devices": ["created REAL"],

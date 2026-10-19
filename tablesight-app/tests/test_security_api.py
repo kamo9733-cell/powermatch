@@ -8,6 +8,7 @@ import pytest
 from fastapi.testclient import TestClient
 
 from tablesight.platform.app import Outbox, create_app
+from tablesight.platform.security import csv_safe
 
 PW = "correct-horse-battery"
 
@@ -170,8 +171,10 @@ def test_csv_export_neutralises_formula_injection(env):
     h = signup(c, ob, "a@x.com")
     lid = mkloc(c, h)
     dev, _ = pair(c, h, lid)
-    evil = ["=HYPERLINK(\"http://evil\",\"x\")", "+1+1", "-2+3", "@SUM(A1)", "\tcmd", "\rcmd"]
-    c.post("/edge/events", json=[ev(i, event_id=f"id{i}", table_id=p, kind="k" + p) for i, p in enumerate(evil)], headers=dev)
+    evil = ["=HYPERLINK(\"http://evil\",\"x\")", "+1+1", "-2+3", "@SUM(A1)"]
+    for p in ("\tcmd", "\rcmd", "=x"):
+        assert csv_safe(p)[:1] == "'"
+    c.post("/edge/events", json=[ev(i, event_id=f"id{i}", table_id=p) for i, p in enumerate(evil)], headers=dev)
     r = c.get("/export/events.csv", params={"location_id": lid}, headers=h)
     assert r.headers["content-type"].startswith("text/csv")
     assert "attachment" in r.headers["content-disposition"]

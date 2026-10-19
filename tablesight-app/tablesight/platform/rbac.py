@@ -13,6 +13,7 @@ PERMS = {
     "viewer": {"analytics.location"},
 }
 LOCATION_SCOPED = {"gm", "host", "server", "viewer"}
+ORDER = ["viewer", "server", "host", "gm", "area_manager", "owner"]  # ascending authority
 
 
 def can(role: str, perm: str) -> bool:
@@ -21,5 +22,8 @@ def can(role: str, perm: str) -> bool:
 
 def can_assign(actor_role: str, target_role: str) -> bool:
     """No privilege escalation: you can invite only roles strictly below your own."""
-    order = ["viewer", "server", "host", "gm", "area_manager", "owner"]
-    return actor_role in order and target_role in order and order.index(target_role) < order.index(actor_role)
+    return actor_role in ORDER and target_role in ORDER and ORDER.index(target_role) < ORDER.index(actor_role)
+
+
+def rank(role: str) -> int:
+    return ORDER.index(role) if role in ORDER else -1

@@ -1,18 +1,24 @@
-# Launch checklist (status as of this build)
-## Done and tested
-- [x] Tenant isolation tests (events, cameras, devices, exports, pairing, corrections)
-- [x] Auth: scrypt, email verify, reset (kills sessions), lockout, rate limit, TOTP 2FA, hashed session tokens
-- [x] RBAC with no privilege escalation; camera credentials encrypted at rest
-- [x] Idempotent edge replay; outage buffering; backup script with integrity check
-- [x] Honest-state rules (stale/low-confidence => uncertain, no alerts)
+# Launch checklist (status after the multi-agent pass + review fixes)
+## Done and tested (synthetic/unit level)
+- [x] Tenant isolation tests; 49 adversarial security tests (docs/SECURITY_REVIEW.md)
+- [x] Auth: scrypt, email verify, reset, lockout, per-IP/email rate limits, TOTP 2FA, hashed tokens, session list/revoke
+- [x] RBAC without escalation; camera credentials encrypted (Fernet); TLS via bundled Caddy
+- [x] Idempotent edge replay, outage buffering, dead-letter for rejected events, clock-skew correction hook
+- [x] Honest-state rules: stale/low-confidence => "uncertain" + recovery event; outage time never counts as neglect
+- [x] Retention purge job (hourly, per-location setting) with tests
+- [x] Edge: ONVIF probe/parse, motion-gated FPS, Ed25519 update verification, pairing, hardened installer script (dry-run tested)
+- [x] Manager web UI (manager/host/TV/settings), 18 browser tests, WCAG contrast checks
+- [x] Alerting: escalation, shift filtering, ack state machine, signed webhook / ntfy / SMTP / chat transports
+- [x] Analytics: shift reports (team-level), forecasts with backtests, queue, capacity, table-ready
 ## Not done — blockers before real customers
-- [ ] Real perception model chosen by benchmarking on eval clips (needs data, docs/DATA.md)
-- [ ] Real-footage accuracy and `docs/MODEL_CARD.md` numbers
-- [ ] Postgres + migrations; SQLite is single-node only
-- [ ] Passwordless/social sign-in, CSP on app UI, OWASP pass by a human, pen test
-- [ ] Signed edge auto-updates; real edge runtime (RTSP/ONVIF ingest) — `edge-install.sh` is a stub
-- [ ] Manager mobile UI, floor-plan editor, labelling tool UI
-- [ ] Push/SMS/WhatsApp notifier implementations (interface only)
-- [ ] Counsel review of everything in docs/legal/ (all drafts)
-- [ ] Load test (many cameras at rush), observability (metrics/tracing), tested restore drill
-- [ ] Time-zone/DST/business-day handling wired end to end (helper exists)
+- [ ] **Real perception model**, chosen by benchmarking on licensed/consented footage (docs/DATA.md). No real-footage metric exists.
+- [ ] Camera pipeline wired into the edge service (capture -> detector -> FloorPipeline -> outbox); `edge/__main__` only sends heartbeats today
+- [ ] Alerting stack unified: AlertEngine (alerts.py) vs Escalator/AlertRouter (escalation.py) overlap; Table does not use adaptive thresholds; ack -> report wiring
+- [ ] Update download/staged install/rollback; real NVR integration (only ONVIF probe parsing exists)
+- [ ] Postgres + migrations (SQLite is single node; events PK changed this pass, no migration for old DBs)
+- [ ] Real email/SMS/push senders in production config (interfaces + transports only)
+- [ ] Not implemented but referenced in the legal drafts (marked [NOT YET IMPLEMENTED]): blurring, video-access audit, encryption at rest of DB/backups, minor handling
+- [ ] Passwordless/social sign-in, org switching (login picks the first membership), webhooks endpoints
+- [ ] Production serving of `web/` (Caddy route added; needs real TLS domain and CSP review)
+- [ ] Counsel review of everything in docs/legal/; human security review; load test; restore drill
+- [ ] Server-side demo flag (UI currently detects "DEMO MODE" in the location name)

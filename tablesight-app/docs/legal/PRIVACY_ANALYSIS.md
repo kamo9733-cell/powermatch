@@ -1,5 +1,8 @@
 > **DRAFT — requires review by qualified counsel; not legal advice.**
 
+> **Implementation status:** statements marked [NOT YET IMPLEMENTED] describe intended controls that do not exist in the product yet (as of this draft: no video endpoint, no blurring, no encryption of the database or backups, no minor-detection). Remove or make true before publication.
+
+
 # TableSight Privacy Analysis (CLAUDE.md §2.1)
 
 Researched 2026-10-19. Statute text changes; every citation marked "verify" or without a fetched primary source must be checked against the official text before reliance. Several primary-source sites (gdpr-info.eu, eur-lex, ilga.gov, statutes.capitol.texas.gov) could not be fetched directly from the build environment (DNS failure), so quotations below come from search-result summaries of those pages. Treat them as secondary until confirmed.
@@ -74,7 +77,7 @@ Design response: per-location staff analytics mode `on / anonymized / off` (defa
 2. Re-ID, if enabled, uses non-face appearance features only (colour histogram, coarse body shape), computed on the edge, held in RAM only, discarded at track end or after a maximum of one visit (configurable, default 2 hours), never written to disk or cloud, never linked across visits or days, never matched to POS identity or names.
 3. Re-ID is a per-location setting, default OFF; automatically forced OFF in Illinois, Texas, Washington and any jurisdiction flagged "biometric-sensitive" unless an admin with counsel sign-off overrides and the consent flow is enabled. EU default OFF pending DPIA completion.
 4. Metadata-only cloud sync: zone events, counts, durations with random per-visit track IDs rotated daily; no embeddings leave the edge.
-5. Video: on-prem, cloud viewing opt-in, role-based blurring, audit log, configurable retention with a hard maximum, tenant export and deletion.
+5. Video: on-prem, cloud viewing opt-in, role-based blurring **[NOT YET IMPLEMENTED — must be true before publishing]**, audit log, configurable retention (enforced by an hourly purge job) with a hard maximum, tenant export and deletion.
 6. Staff: per-location `on / anonymized / off`; anonymized aggregates to roles/sections, never to named individuals; no performance scoring of an individual without explicit mode `on` and notice acknowledgement.
 7. Children: aggregate-only for possible minors (section 5).
 8. No emotion, demographic, age, gender or ethnicity inference.

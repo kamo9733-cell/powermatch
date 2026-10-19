@@ -33,3 +33,7 @@ Open items: no per-table drill-down yet ("every number is explorable"; needs per
 5. **CSP:** the API stamps `default-src 'none'` on every response, which blocks any web assets served from the API app. `scripts/seed_demo.py` therefore serves `web/` as a sibling ASGI mount with its own CSP (`default-src 'self'`, no inline script or style). Production should serve `web/` from a static host or reverse-proxy path with that policy, same origin as the API (or add CORS deliberately).
 6. **Locations list lacks plan max retention**, so the retention field relies on the API's 402 message.
 7. Tokens are kept in `sessionStorage` (cleared on tab close); an HttpOnly cookie session would be safer against XSS once the API supports it.
+
+
+## Update (lead integration)
+Gaps 1 and 3 above are now closed: `GET /me` and `POST /alerts/ack` exist (with tests in tests/test_api_gaps.py). Still open: a floor-state endpoint, per-table **numeric confidence is not shown anywhere in the UI** (only the binary "uncertain" state) — CLAUDE.md §2.3 asks for confidence, so this is a known shortfall, not a feature.

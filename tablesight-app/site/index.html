@@ -32,7 +32,8 @@ table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px so
 <header><nav aria-label="Primary"><strong>TableSight</strong><a href="#demo">Demo</a><a href="#venues">Venues</a><a href="#roi">ROI</a><a href="#pricing">Pricing</a><a href="#privacy">Privacy</a><a href="#faq">FAQ</a></nav></header>
 <main>
 <h1>Know which table needs you — before they wave.</h1>
-<p class="lead">TableSight watches your floor with the cameras you already have and tells the right person, quietly, when a table has waited too long. No facial recognition. Runs on your own hardware.</p>
+<p class="lead">TableSight is designed to work with the cameras you already have and tell the right person, quietly, when a table has waited too long. No facial recognition. Built to run on your own hardware.</p>
+<p class="banner" role="note"><strong>Early access.</strong> Detection has been tested on simulated data only. No real-footage accuracy has been measured yet, and camera/NVR integration is still in development.</p>
 <p><a class="btn" href="#signup">Start free trial</a></p>
 
 <h2 id="demo">Live demo <span class="tag">Demo mode · simulated data</span></h2>
@@ -44,52 +45,53 @@ table{border-collapse:collapse;width:100%}td,th{padding:8px;border-bottom:1px so
 <div class="grid">
 <div class="card"><b>Casual dining</b><p>Greet and check-back timers, turn times, neglected-table nudges.</p></div>
 <div class="card"><b>Fine dining</b><p>Patient thresholds. Long dwell is normal; alerts are rare and polite.</p></div>
-<div class="card"><b>Cafés &amp; quick service</b><p>Queue wait and dirty-table alerts. Laptop campers are not a problem.</p></div>
-<div class="card"><b>Bars &amp; pubs</b><p>Bar queue and occupancy vs licensed capacity, tuned for low light.</p></div>
+<div class="card"><b>Cafés &amp; quick service</b><p>Queue wait estimates. Long stays are not treated as neglect. (Dirty-table alerts: planned.)</p></div>
+<div class="card"><b>Bars &amp; pubs</b><p>Bar queue and occupancy vs licensed capacity (low-light performance not yet measured).</p></div>
 </div>
 
 <h2 id="roi">ROI calculator</h2>
 <div class="card" id="roibox"><p class="tag">Your own assumptions drive this. We don't claim a typical uplift.</p>
 <label for="cov">Covers per week</label><input id="cov" type="number" value="800" min="0">
 <label for="chk">Average spend per cover</label><input id="chk" type="number" value="28" min="0">
-<label for="upl">Extra repeat/ordering revenue you assume from faster check-ins (%)</label><input id="upl" type="number" value="1" min="0" step="0.1">
-<label for="cost">Monthly TableSight cost</label><input id="cost" type="number" value="149" min="0">
+<label for="upl">Extra repeat/ordering revenue you assume from faster check-ins (%) — enter your own estimate</label><input id="upl" type="number" value="0" min="0" step="0.1">
+<label for="cost">Monthly TableSight cost (illustrative)</label><input id="cost" type="number" value="149" min="0">
 <p id="roiout" role="status"></p></div>
 
-<h2 id="pricing">Pricing <span class="tag">Proposed · checkout not enabled</span></h2>
+<h2 id="pricing">Pricing <span class="tag">Illustrative, not final · checkout not enabled</span></h2>
 <div class="grid">
-<div class="card"><b>Essential</b><p>Up to 4 cameras, 1 location</p><p>$149/mo (proposed)</p></div>
-<div class="card"><b>Pro</b><p>Up to 12 cameras, analytics &amp; API</p><p>$299/mo (proposed)</p></div>
-<div class="card"><b>Group</b><p>Multi-location rollups</p><p>Contact us</p></div>
+<div class="card" data-plan="starter" data-locations="1" data-cameras="8"><b>Starter</b><p>1 location, up to 8 cameras</p><p>~$149/mo (illustrative)</p></div>
+<div class="card" data-plan="pro" data-locations="5" data-cameras="40"><b>Pro</b><p>Up to 5 locations, 40 cameras</p><p>~$299/mo (illustrative)</p></div>
+<div class="card" data-plan="enterprise"><b>Enterprise</b><p>Larger groups</p><p>Contact us</p></div>
 </div>
 <p><button class="btn" aria-disabled="true" disabled>Checkout coming soon</button></p>
 
 <h2 id="privacy">Privacy &amp; security</h2>
 <ul><li>No facial recognition or biometric identification — by design.</li>
-<li>Video is processed on-site; only table events leave the building. Cloud video is opt-in.</li>
+<li>Design goal: video is processed on-site and only table events leave the building; cloud video is opt-in.</li>
 <li>Staff analytics per location: on, anonymized, or off. Notice templates included.</li>
-<li>Camera passwords encrypted, access audited, data export and deletion on request.</li></ul>
+<li>Camera passwords encrypted, data access audited, configurable retention, data export and deletion on request.</li></ul>
 <p class="tag">Legal templates are drafts; have counsel review them for your region.</p>
 
 <h2 id="faq">FAQ</h2>
-<details><summary>Do I need new cameras?</summary><p>Usually not. We connect to existing RTSP/ONVIF cameras and many NVRs.</p></details>
+<details><summary>Do I need new cameras?</summary><p>The goal is no new cameras: RTSP/ONVIF cameras are the target. NVR support is planned, not available yet.</p></details>
 <details><summary>What if it's wrong?</summary><p>It says so. Low-confidence or stale views are marked, and you can tap "wrong alert" to correct it.</p></details>
 <details><summary>Is this staff surveillance?</summary><p>It's built for coaching and team balance. Individual staff reporting can be turned off per location.</p></details>
 
 <h2 id="signup">Sign up</h2>
+<p class="tag">Preview only — sign-up is not connected.</p>
 <form class="card" onsubmit="event.preventDefault();document.getElementById('su').textContent='Signup is not connected in this static preview.'">
 <label for="em">Work email</label><input id="em" type="email" autocomplete="email" required>
 <p><button class="btn">Create account</button></p><p id="su" role="status" class="tag"></p></form>
 </main>
 <footer><p class="tag">© TableSight. Demo and pricing are illustrative.</p></footer>
 <script>
-const T=[{n:"1",s:"ok",t:"Checked 2 min ago",c:.96},{n:"2",s:"warn",t:"No check-in for 6 min",c:.91},{n:"3",s:"ok",t:"Empty",c:.97},{n:"4",s:"warn",t:"Needs cleaning",c:.88}];
+const T=[{n:"1",s:"ok",t:"Checked 2 min ago"},{n:"2",s:"warn",t:"No check-in for 6 min"},{n:"3",s:"ok",t:"Empty"},{n:"4",s:"warn",t:"Needs cleaning (example)"}];
 let cut=false;
 function draw(){const f=document.getElementById('floor');f.innerHTML='';T.forEach(x=>{const d=document.createElement('div');const unk=cut;d.className='tbl '+(unk?'unk':x.s);d.setAttribute('role','listitem');
-d.innerHTML='<b>Table '+x.n+'</b><span class="s">'+(unk?'Camera offline — data may be out of date':x.t)+'</span><br><span class="tag">'+(unk?'confidence: unknown':'confidence '+Math.round(x.c*100)+'%')+'</span>';f.appendChild(d)})}
+d.innerHTML='<b>Table '+x.n+'</b><span class="s">'+(unk?'Camera offline — data may be out of date':x.t)+'</span><br><span class="tag">'+(unk?'confidence: unknown':'confidence: sample value, not measured')+'</span>';f.appendChild(d)})}
 document.getElementById('cut').onclick=e=>{cut=!cut;e.target.textContent=cut?'Restore camera':'Simulate camera dropout';draw()};draw();
 function roi(){const g=id=>+document.getElementById(id).value||0;const gain=g('cov')*g('chk')*4.33*g('upl')/100,cost=g('cost');
-document.getElementById('roiout').textContent='Assumed extra revenue: $'+gain.toFixed(0)+'/mo vs cost $'+cost+'/mo → '+(gain>=cost?'pays back at these assumptions':'does not pay back at these assumptions')+'.'}
+document.getElementById('roiout').textContent=(g('upl')?'Assumed extra revenue: $'+gain.toFixed(0)+'/mo vs cost $'+cost+'/mo → '+(gain>=cost?'pays back at these assumptions':'does not pay back at these assumptions')+'.':'Enter your own uplift estimate to see a result.')}
 document.querySelectorAll('#roibox input').forEach(i=>i.oninput=roi);roi();
 </script>
 </body></html>

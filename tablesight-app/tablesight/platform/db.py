@@ -51,6 +51,7 @@ MIGRATIONS = {
     "invites": ["inviter TEXT", "section TEXT"],
     "devices": ["created REAL"],
     "audit": ["ip TEXT"],
+    "locations": ["demo INTEGER DEFAULT 0"],  # set only by scripts/seed_demo.py: the UI banner keys off this
 }
 
 

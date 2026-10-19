@@ -1,5 +1,8 @@
 > **DRAFT — requires review by qualified counsel; not legal advice.**
 
+> **Implementation status:** statements marked [NOT YET IMPLEMENTED] describe intended controls that do not exist in the product yet (as of this draft: no video endpoint, no blurring, no encryption of the database or backups, no minor-detection). Remove or make true before publication.
+
+
 # TableSight Privacy Policy (Draft)
 
 Effective date: [DATE]. Operator: [COMPANY LEGAL NAME, ADDRESS, REGISTRATION NO.]. Contact: [PRIVACY EMAIL]. EU/UK representative: [IF REQUIRED, verify]. DPO: [IF APPOINTED].
@@ -22,7 +25,7 @@ TableSight analyses camera feeds to show a venue where guests are waiting and wh
 | Technical data | device health, logs, IP address | cloud | controller |
 | Support and billing | tickets, plan, invoices | cloud | controller |
 
-We do not collect: face templates, fingerprints, voiceprints, audio, age, gender or ethnicity inferences. Temporary appearance features used to follow a person between cameras (if the Customer enables this) stay in device memory, are not stored, and are deleted when the visit ends (default within [2] hours).
+We do not collect: face templates, fingerprints, voiceprints, audio, age, gender or ethnicity inferences. Within a single camera, the tracker uses a transient torso-colour value to keep a track ID; it is not stored. There is no cross-camera re-identification in the product. If cross-camera re-identification is ever added it must stay off by default, in device memory only, and be reviewed by counsel first (see PRIVACY_ANALYSIS.md).
 
 ## 3. Purposes and legal bases (GDPR; verify for each market)
 
@@ -38,7 +41,7 @@ We share data with sub-processors listed in SUBPROCESSORS.md under written contr
 
 ## 5. Retention
 
-Floor metadata: [90 days] default, configurable. Video: configured by the Customer, default [7 days] on-premise, none in cloud unless opted in. Account data: life of account plus [30] days. Logs: [12 months]. Backups roll off within [35] days.
+Floor metadata: 30 days default (as implemented), configurable up to the plan maximum; deleted by an hourly purge job. Video: configured by the Customer, default [7 days] on-premise, none in cloud unless opted in. Account data: life of account plus [30] days. Logs: [12 months]. Backups roll off within [35] days.
 
 ## 6. International transfers
 
@@ -50,7 +53,7 @@ Depending on where you live: access, correction, deletion, restriction, portabil
 
 ## 8. Children
 
-Our dashboard is not for children. At venues, the system is designed not to run individual-level analytics on people who appear to be minors; only anonymous counts are used.
+Our dashboard is not for children. At venues, the system is intended not to run individual-level analytics on people who appear to be minors; only anonymous counts are used. **[NOT YET IMPLEMENTED — must be true before publishing]** (no minor-detection exists; today no individual-level analytics are produced at all, only team-level).
 
 ## 9. Employees at venues
 
@@ -58,7 +61,7 @@ Staff analytics are optional and controlled by the Customer, who must give staff
 
 ## 10. Security
 
-Encryption in transit and at rest, encrypted camera credentials, role-based access, blurred video for non-privileged roles, audit logging of video access, tested backups. No system is perfectly secure; breaches are notified as the law requires (GDPR Art. 33/34, verify).
+TLS in transit (bundled reverse proxy), encrypted camera credentials, role-based access, audit logging of data access, backups with an integrity check. Not yet implemented **[NOT YET IMPLEMENTED — must be true before publishing]**: encryption at rest of database/backups, blurred video for non-privileged roles, audit logging of video access (there is no video endpoint yet). No system is perfectly secure; breaches are notified as the law requires (GDPR Art. 33/34, verify).
 
 ## 11. Automated decision-making
 

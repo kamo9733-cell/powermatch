@@ -9,6 +9,6 @@ services:
   caddy:               # Apache-2.0 reverse proxy, automatic TLS
     image: caddy:2
     ports: [ "80:80", "443:443" ]
-    volumes: [ "./Caddyfile:/etc/caddy/Caddyfile:ro", "caddy:/data" ]
+    volumes: [ "./Caddyfile:/etc/caddy/Caddyfile:ro", "../web:/srv/web:ro", "caddy:/data" ]
     depends_on: [ api ]
 volumes: { tsdata: {}, caddy: {} }

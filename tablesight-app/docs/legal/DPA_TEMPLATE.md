@@ -1,5 +1,8 @@
 > **DRAFT — requires review by qualified counsel; not legal advice.**
 
+> **Implementation status:** statements marked [NOT YET IMPLEMENTED] describe intended controls that do not exist in the product yet (as of this draft: no video endpoint, no blurring, no encryption of the database or backups, no minor-detection). Remove or make true before publication.
+
+
 # Data Processing Agreement (Template)
 
 Between **[CUSTOMER]** ("Controller") and **[TABLESIGHT ENTITY]** ("Processor"). Effective [DATE]. Forms part of the Master Services Agreement. Based on the structure of GDPR Art. 28(3) (verify against official text); adapt for UK GDPR, CCPA service-provider terms and other regimes.
@@ -46,7 +49,7 @@ This DPA prevails over the MSA on data protection.
 Parties' contacts, DPO, supervisory authority [__], list above.
 
 ## Annex II: Technical and organisational measures
-Encryption in transit and at rest; encrypted camera credentials; tenant isolation tested automatically; RBAC with least privilege; blurring by default for non-privileged roles; audit log of video access; configurable retention; edge-first processing; metadata-only sync; signed updates; vulnerability scanning and patching; logging and monitoring; backup with tested restore; staff confidentiality and training; support view with no video access; incident response plan.
+TLS in transit via the bundled reverse proxy; encrypted camera credentials (Fernet); tenant isolation tested automatically; RBAC with least privilege; encryption at rest of database and backups **[NOT YET IMPLEMENTED — must be true before publishing]**; blurring by default for non-privileged roles **[NOT YET IMPLEMENTED — must be true before publishing]**; audit log of video access; configurable retention; edge-first processing; metadata-only sync; signed updates; vulnerability scanning and patching; logging and monitoring; backup with tested restore; staff confidentiality and training; support view with no video access; incident response plan.
 
 ## Annex III: Sub-processors and locations
 See SUBPROCESSORS.md.

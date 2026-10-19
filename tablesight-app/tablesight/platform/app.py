@@ -598,7 +598,7 @@ def create_app(db_path: str = ":memory:", vault_key: bytes | None = None, outbox
 
     @app.get("/locations")
     def list_locations(ctx: dict = Depends(me)):
-        q, a = "SELECT id,name,venue_type,tz,staff_analytics,retention_days FROM locations WHERE org_id=?", [ctx["org_id"]]
+        q, a = "SELECT id,name,venue_type,tz,staff_analytics,retention_days,demo FROM locations WHERE org_id=?", [ctx["org_id"]]
         if ctx["role"] in rbac.LOCATION_SCOPED:
             q, a = q + " AND id=?", a + [ctx["location_id"]]
         return [dict(r) for r in db.execute(q, a)]

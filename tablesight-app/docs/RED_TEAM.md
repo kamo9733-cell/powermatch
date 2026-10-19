@@ -10,3 +10,12 @@
 9. Email verification tokens/invites are returned via the Outbox interface only; no real delivery path, so signup is unusable in production until a notifier exists.
 10. Session fixation is limited (random tokens, hashed at rest) but there is no session revocation UI and no CSRF story yet (bearer tokens only; revisit if cookies are introduced).
 11. `needs_attention` timers run on observation time; a manager's clock drift on the edge could shift alerts — server should timestamp-check batches.
+
+## From the independent code review (unfixed / partially fixed)
+12. **Alerting stack not wired:** `AlertEngine`, `Escalator`/`AlertRouter` and `notify.adaptive` overlap; `Table` still uses fixed thresholds; `staff_visit` events carry no `staff` field so staff-level reports are empty; `reports` ignore `uncertain`/`needs_clean`. (Fixed: ack payload now has table + time.)
+13. `shift_report(window=...)` drops visits whose `seated` precedes the window (turn median biased short); `seated_t` is the confirm time while dwell starts at true seat time.
+14. `Homography.apply` has no guard for pixels above the horizon (w<=0) => wrong floor positions.
+15. `login` picks the first membership; there is no org switching.
+16. Existing SQLite files keep the old events primary key (org_id,event_id); new DBs use (org_id,location_id,event_id).
+17. Demo mode is detected client-side from the location name, and `seed_demo` fakes device heartbeats (so staleness can't appear organically in the demo).
+Fixed this pass (with regression tests in tests/test_review_fixes.py and tests/test_scenarios.py): skewed-clock data loss on the edge, false alerts/visits after a camera outage, oldest-first event listing, per-table alert cap never resetting, backwards clock wedging the alert gap, digest closing for all tables, lookalike-localhost pairing, NaN forecasts, flusher overflow, section never stamped on events, retention not enforced.

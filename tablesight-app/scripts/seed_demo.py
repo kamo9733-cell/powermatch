@@ -1,4 +1,5 @@
 """Boot the TableSight API + web UI in-process with DEMO data (everything is labelled 'DEMO MODE').
+NOTE: the heartbeat thread below simulates a live camera box; staleness only appears with --stale.
 
     python scripts/seed_demo.py [--port N] [--stale] [--lang ar]
 
@@ -95,6 +96,7 @@ def build_demo(stale: bool = False):
     c.post("/verify-email", params={"token": [m for m in ob.sent if m["kind"] == "verify_email"][-1]["token"]}).raise_for_status()
     ho = login(OWNER)
     lid = c.post("/locations", params={"name": LOCATION}, headers=ho).json()["id"]
+    api.state.db.execute("UPDATE locations SET demo=1 WHERE id=?", (lid,))
     c.post("/cameras", params={"location_id": lid, "name": "Dining room", "url": "rtsp://demo.invalid/stream"}, headers=ho)
     # manager with two-step sign-in
     c.post("/invites", params={"email": GM, "role": "gm", "location_id": lid}, headers=ho).raise_for_status()

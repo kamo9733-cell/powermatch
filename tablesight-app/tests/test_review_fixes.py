@@ -128,3 +128,10 @@ def test_forecast_ignores_nan_history():
     hist[(29, 12)] = float("nan")
     r = F.ewma_ratio(hist, 30, 12)
     assert (not r.ok) or (r.point == r.point and r.high == r.high)  # never ok=True with NaN
+
+
+def test_locations_expose_server_side_demo_flag():
+    c, app, _, owner, lid, _ = boot()
+    assert c.get("/locations", headers=owner).json()[0]["demo"] == 0
+    app.state.db.execute("UPDATE locations SET demo=1 WHERE id=?", (lid,))
+    assert c.get("/locations", headers=owner).json()[0]["demo"] == 1

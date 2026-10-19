@@ -168,7 +168,7 @@
     });
   }
   function demoBanner() {
-    var d = $("#demo"), demo = S.loc && /DEMO MODE/i.test(S.loc.name);
+    var d = $("#demo"), demo = S.loc && (S.loc.demo === 1 || /DEMO MODE/i.test(S.loc.name));  // server flag first; name match is a fallback
     d.hidden = !demo; if (demo) d.textContent = t("demo");
   }
   function refresh() {

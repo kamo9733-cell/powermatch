@@ -52,3 +52,6 @@ Evidence: `tablesight/table.py` (state machine), `templates.py`, `alerts.py`, `h
 - Row 12 and 19 map to the quick-service, cafe and bar segments (MARKET_RESEARCH.md section 1); they open markets that table-centric competitors may not address.
 - Risk of pose-based attention detection (row 30) is the highest; per CLAUDE.md it must be marked experimental.
 - No accuracy figure in this file is measured. Real evaluation needs licensed footage, currently blocked (docs/PROGRESS.md).
+
+
+> **Status note (lead, after review):** the "Built / Partial / Documented" column above was written before the multi-agent pass. Several rows marked "Documented" now exist in code: ROI calculator (site), queue/capacity/reports/forecast modules, i18n + RTL, edge offline replay, TV mode, camera health. "Built" means unit-tested on synthetic data only; none is validated on real footage.

@@ -1,5 +1,8 @@
 > **DRAFT — requires review by qualified counsel; not legal advice.**
 
+> **Implementation status:** statements marked [NOT YET IMPLEMENTED] describe intended controls that do not exist in the product yet (as of this draft: no video endpoint, no blurring, no encryption of the database or backups, no minor-detection). Remove or make true before publication.
+
+
 # Staff Notice Template (Floor Analytics)
 
 Employer: [VENUE LEGAL NAME]. Location: [LOCATION]. Date: [DATE]. Staff-analytics mode for this location: **[OFF / ANONYMIZED / ON]**.
@@ -25,7 +28,7 @@ Employer: [VENUE LEGAL NAME]. Location: [LOCATION]. Date: [DATE]. Staff-analytic
 
 **Why (employer's purpose and legal basis).** [Service quality and guest wait times; EU/UK: legitimate interests, verify]. 
 
-**Who sees video and data.** [Managers], with blurred views for others; access is logged.
+**Who sees video and data.** [Managers]; access to data is logged. Blurred views for others **[NOT YET IMPLEMENTED — must be true before publishing]**.
 
 **Retention.** Video [X days]; metrics [Y days].
 

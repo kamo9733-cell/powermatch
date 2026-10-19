@@ -48,6 +48,8 @@ class Table:
     _absent_since: float | None = None
     _staff_since: float | None = None
     _flagged: bool = False
+    _cand_party: int = 0
+    _cand_n: int = 0
     events: list[Event] = field(default_factory=list)
 
     def _emit(self, t: float, kind: str, **detail) -> None:
@@ -102,7 +104,12 @@ class Table:
     def _step_seated(self, o: Observation) -> None:
         if o.guests > 0:
             self._absent_since = None
-            self.party_size = max(self.party_size, o.guests)
+            if o.guests > self.party_size and o.guests == self._cand_party:
+                self._cand_n += 1
+                if self._cand_n >= 5:
+                    self.party_size = o.guests
+            else:
+                self._cand_party, self._cand_n = o.guests, 1
             self._check_neglect(o)
             return
         self._absent_since = self._absent_since if self._absent_since is not None else o.t

@@ -2,7 +2,7 @@ import pytest
 
 from tablesight.alerts import AlertEngine
 from tablesight.simulator import run, seated_party, walk_by, with_gaps
-from tablesight.table import Observation, Table
+from tablesight.table import Event, Observation, Table
 from tablesight.templates import get_template
 
 
@@ -84,14 +84,33 @@ def test_low_confidence_is_explicitly_uncertain():
     assert tb.events[-1].kind == "uncertain"
 
 
-def test_alert_cap_per_table_and_rush_spacing():
+def test_rush_alerts_are_batched_into_digest_not_lost():
     tpl = get_template("casual_dining")
     eng = AlertEngine(tpl)
     tables = [Table(f"T{i}", tpl) for i in range(3)]
     for o in run(seated_party(0, 9000), 1000):
         for tb in tables:
             tb.step(o)
-    evs = sorted((e for tb in tables for e in tb.events), key=lambda e: e.t)
-    out = [a for e in evs if (a := eng.process(e))]
-    # three tables flag at the same second but alerts are spaced out, not blasted
-    assert len(out) == 1
+    evs = sorted((e for tb in tables for e in tb.events if e.kind == "needs_attention"),
+                 key=lambda e: e.t)
+    first = [a for e in evs if (a := eng.process(e))]
+    assert len(first) == 1 and len(first[0]["tables"]) == 1
+    digest = eng.flush(evs[0].t + eng.min_gap_s + 1)
+    assert digest and digest["digest"] and len(digest["tables"]) == 2
+
+
+def test_held_alert_discarded_if_staff_arrives():
+    tpl = get_template("casual_dining")
+    eng = AlertEngine(tpl)
+    mk = lambda t, k, tb, **d: Event(t, tb, k, d)
+    eng.process(mk(100, "needs_attention", "A", waited=200, first_visit=True))
+    eng.process(mk(110, "needs_attention", "B", waited=200, first_visit=True))
+    eng.process(mk(120, "staff_visit", "B"))
+    assert eng.flush(300) is None
+
+
+def test_single_frame_false_detection_does_not_inflate_party():
+    tpl = get_template("casual_dining")
+    spec = lambda t: (6 if t == 100 else 2, 0)
+    tb = play(tpl, spec, 300)
+    assert tb.party_size == 2

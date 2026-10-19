@@ -20,4 +20,4 @@
 - Appearance re-ID across cameras is **deferred** pending the biometric-law review (GDPR/BIPA/CUBI); use geometry-based fusion by default.
 
 ## D4. Alert policy
-- Per-table cap and per-recipient spacing. **Known flaw:** spacing currently *drops* suppressed alerts instead of batching them — see RED_TEAM #1.
+- Per-table cap and per-recipient spacing. Suppressed alerts are held and sent as one digest; held alerts are discarded if staff arrives first.

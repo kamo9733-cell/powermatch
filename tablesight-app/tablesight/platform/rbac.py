@@ -1,0 +1,25 @@
+"""Hospitality roles -> permissions. Servers see only their own section; viewers never see video."""
+PERMS = {
+    "owner": {"org.admin", "billing", "invite", "location.write", "camera.write", "video.view",
+              "analytics.org", "analytics.location", "analytics.staff", "events.read", "export",
+              "alerts.ack", "audit.read", "data.delete", "corrections.write"},
+    "area_manager": {"invite", "location.write", "camera.write", "video.view", "analytics.org",
+                     "analytics.location", "analytics.staff", "events.read", "export", "alerts.ack",
+                     "audit.read", "corrections.write"},
+    "gm": {"invite", "camera.write", "video.view", "analytics.location", "analytics.staff",
+           "events.read", "export", "alerts.ack", "corrections.write"},
+    "host": {"events.read", "alerts.ack", "corrections.write", "analytics.location"},
+    "server": {"events.read.own_section", "alerts.ack"},
+    "viewer": {"analytics.location"},
+}
+LOCATION_SCOPED = {"gm", "host", "server", "viewer"}
+
+
+def can(role: str, perm: str) -> bool:
+    return perm in PERMS.get(role, set())
+
+
+def can_assign(actor_role: str, target_role: str) -> bool:
+    """No privilege escalation: you can invite only roles strictly below your own."""
+    order = ["viewer", "server", "host", "gm", "area_manager", "owner"]
+    return actor_role in order and target_role in order and order.index(target_role) < order.index(actor_role)

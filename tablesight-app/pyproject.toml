@@ -16,3 +16,7 @@ testpaths = ["tests"]
 
 [tool.ruff]
 line-length = 100
+
+[tool.ruff.lint.per-file-ignores]
+"tablesight/platform/app.py" = ["B008"]  # FastAPI Depends() defaults are the documented idiom
+"tablesight/edge/agent.py" = ["BLE001"]  # any transport failure must buffer, never drop

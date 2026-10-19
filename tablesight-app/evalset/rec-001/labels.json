@@ -1,0 +1,3 @@
+{"_note": "Hand labels by the lead from sampled frames: seated guests per table, constant over the 11 s clip (scene is nearly static). Aisle: ~2 people standing/bending near the back grill, role unknown, not in any zone. Far table C has a cluster of >=2 people, exact count uncertain, so only occupancy is scored there.",
+ "occupied": {"A": true, "B": true, "C": true, "D": false, "E": false},
+ "count": {"A": 2, "B": 2}}

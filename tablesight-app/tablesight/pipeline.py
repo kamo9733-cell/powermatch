@@ -1,7 +1,7 @@
 """Hero loop glue: detections -> tracks -> floor positions -> zones -> table observations -> events."""
 from dataclasses import dataclass, field
 
-from .geometry import Homography, Zone, assign_zone, foot_point
+from .geometry import Homography, Zone, assign_zone, assign_zone_by_overlap, foot_point
 from .perception import IouTracker, RawDet
 from .roles import Feature, UniformClassifier
 from .table import Event, Observation, Table
@@ -14,6 +14,7 @@ class FloorPipeline:
     homography: Homography
     zones: list[Zone]
     roles: UniformClassifier
+    anchor: str = "foot"  # "foot" (floor-plan homography) | "overlap" (image-space zones, hidden feet OK)
     tracker: IouTracker = field(default_factory=lambda: IouTracker(min_hits=3))
     tables: dict[str, Table] = field(default_factory=dict)
     # role is smoothed per track: one noisy frame must not flip staff<->guest
@@ -38,7 +39,8 @@ class FloorPipeline:
         counts = {k: [0, 0] for k in self.tables}
         unknown_in_zone = {k: 0 for k in self.tables}
         for tid, box in tracks:
-            z = assign_zone(self.homography.apply(foot_point(box)), self.zones)
+            z = (assign_zone_by_overlap(box, self.zones) if self.anchor == "overlap"
+                 else assign_zone(self.homography.apply(foot_point(box)), self.zones))
             if not z or z.zone_id not in self.tables:
                 continue
             role = self._role(tid, feats.get(box, (0, 0, 0)))

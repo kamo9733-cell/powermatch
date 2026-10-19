@@ -8,6 +8,7 @@ dependencies = []
 [project.optional-dependencies]
 platform = ["fastapi", "uvicorn", "cryptography", "httpx"]
 eval = ["numpy"]
+vision = ["numpy", "opencv-python-headless"]
 dev = ["pytest", "ruff", "numpy", "fastapi", "uvicorn", "cryptography", "httpx", "playwright",
        "pip-audit"]
 

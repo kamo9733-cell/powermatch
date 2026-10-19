@@ -1,5 +1,5 @@
 # Model card (current honest status)
-**No trained perception model ships yet.** The detector is a pluggable interface (`tablesight/perception.py`); the bundled `IouTracker` is a dependency-free baseline, and `UniformClassifier` is a colour-prototype staff/guest heuristic trained only from manager corrections.
+**No perception model ships yet.** A provisional YOLOX-S person detector (adapter `perception_yolox.py`, weights not shippable until licence-verified) has been run on one real clip: see docs/EVAL_REAL.md (smoke test, hand-labelled by the author, one scene). The detector is a pluggable interface (`tablesight/perception.py`); the bundled `IouTracker` is a dependency-free baseline, and `UniformClassifier` is a colour-prototype staff/guest heuristic trained only from manager corrections.
 
 ## What is measured
 Only **synthetic** results (simulator + `tests/test_hero_loop.py`): on scripted scenes, neglect-alert precision/recall >= 0.9 and delay within 60 s of the template threshold. These prove the reasoning layer, **not real-world accuracy**. No real-footage number exists; do not quote one.

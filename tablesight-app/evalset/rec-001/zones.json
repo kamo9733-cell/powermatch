@@ -1,0 +1,8 @@
+{"_note": "Image-space polygons (pixels of the 2622x1206 landscape recording), hand-drawn from one frame by the lead; rough.",
+ "zones": [
+  {"id": "A", "kind": "table", "poly": [[475,375],[875,375],[1100,750],[1100,1000],[675,1000],[475,750]]},
+  {"id": "B", "kind": "table", "poly": [[1025,450],[1550,450],[1550,900],[1350,1025],[1000,1025]]},
+  {"id": "C", "kind": "table", "poly": [[475,200],[875,200],[875,375],[475,375]]},
+  {"id": "D", "kind": "table", "poly": [[1575,475],[1875,475],[1875,725],[1550,725]]},
+  {"id": "E", "kind": "table", "poly": [[1500,850],[2125,850],[2125,1200],[1500,1200]]}
+ ]}

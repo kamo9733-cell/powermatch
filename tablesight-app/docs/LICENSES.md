@@ -11,6 +11,8 @@ Status legend: **verified** = read from the component's own LICENSE file or inst
 | opencv-python (optional, edge) | Apache-2.0 | unverified | RTSP capture | **wheels bundle FFmpeg (LGPL, possibly GPL builds) — not inspected. Prefer opencv-python-headless and inspect the build before shipping** |
 | Caddy image `caddy:2` (deploy) | Apache-2.0 | unverified | TLS reverse proxy | notice |
 | `python:3.12-slim` base image | Debian packages incl. GPL components | unverified | container base | the image is not part of our source; document in the release notes |
+| YOLOX-S ONNX (opencv_zoo) | Apache-2.0 (opencv_zoo LICENSE fetched) | **weights/COCO provenance unverified** | provisional detector, local eval only | do not ship until verified |
+| opencv-python-headless (vision extra) | Apache-2.0 (FFmpeg inside wheels: LGPL, not inspected) | unverified | detector runtime / capture | inspect build before shipping |
 | RF-DETR Nano–Large (candidate, not used yet) | Apache-2.0 code | code LICENSE verified; **weights unverified** | perception | NOTICE, check each weight file |
 | RT-DETR, YOLOX, ByteTrack, MediaMTX, go2rtc (candidates) | Apache-2.0 / Apache-2.0 / MIT / MIT / MIT | LICENSE files fetched 2026-10-19 (verified for code; weights unverified) | candidates only | — |
 | ntfy (protocol client only, no code vendored) | Apache-2.0 / GPLv2 dual | repo LICENSE files checked by the alerting agent | notify/ntfy.py | rely on Apache-2.0 |

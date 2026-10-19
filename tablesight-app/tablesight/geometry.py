@@ -75,3 +75,25 @@ def assign_zone(p: Point, zones: list[Zone]) -> Zone | None:
     if any(z.kind == "exclude" for z in hit):
         return None
     return hit[0] if hit else None
+
+
+def assign_zone_by_overlap(box: tuple[float, float, float, float], zones: list[Zone], min_frac: float = 0.35,
+                           grid: int = 6) -> Zone | None:
+    """Assign a person to the zone containing most of their box (sampled on a grid), in the SAME coordinate
+    space as the zones. Unlike foot_point this survives hidden feet (seated guests behind tables/benches),
+    which a real wall-camera clip showed breaks the foot rule. Exclusion zones still win.
+    The upper 15% of the box (head/shoulders reaching over a neighbouring table) is ignored."""
+    x1, y1, x2, y2 = box
+    top = y1 + 0.15 * (y2 - y1)
+    pts = [(x1 + (i + 0.5) * (x2 - x1) / grid, top + (j + 0.5) * (y2 - top) / grid)
+           for i in range(grid) for j in range(grid)]
+    counts: dict[str, int] = {}
+    by_id = {z.zone_id: z for z in zones}
+    for p in pts:
+        z = assign_zone(p, zones)
+        if z is not None:
+            counts[z.zone_id] = counts.get(z.zone_id, 0) + 1
+    if not counts:
+        return None
+    best = max(counts, key=counts.get)
+    return by_id[best] if counts[best] / len(pts) >= min_frac else None

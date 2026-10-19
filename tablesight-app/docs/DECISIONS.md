@@ -30,3 +30,9 @@
 
 ## D6. Cross-camera fusion is geometry-only
 Floor-plan distance between detections from different cameras; no appearance re-ID (privacy: docs/legal/PRIVACY_ANALYSIS.md).
+
+## D7. First real detector: YOLOX-S via opencv_zoo (provisional, 2026-10-19)
+- **Why:** the only permissively-licensed ONNX detector reachable from the build sandbox (HuggingFace, Roboflow and GitHub release assets are blocked; `media.githubusercontent.com` LFS and PyPI work). opencv_zoo's YOLOX directory carries an Apache-2.0 LICENSE (fetched); YOLOX code is Apache-2.0.
+- **Not verified:** the COCO-trained weights' provenance/terms and COCO image licences. Treat as an evaluation baseline, **not shippable** until verified.
+- **Alternatives still to benchmark** on this clip: RF-DETR Nano–Large, RT-DETR (blocked here: weights not reachable).
+- **Revisit when:** weights for RF-DETR/RT-DETR are obtainable, or footage grows beyond one clip.

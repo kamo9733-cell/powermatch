@@ -110,3 +110,15 @@ def test_analytics():
     assert forecast_covers({12: [40, 50]}, 12)["covers"] is None
     assert forecast_covers({12: [40, 50, 60]}, 12)["covers"] == 50
     assert business_day(1.0, 100) == 99 and business_day(12, 100) == 100
+
+
+def test_overlap_assignment_survives_hidden_feet_where_foot_rule_fails():
+    from tablesight.geometry import assign_zone_by_overlap
+    near = Zone("near", [(0, 0), (100, 0), (100, 100), (0, 100)])
+    far = Zone("far", [(0, 100), (100, 100), (100, 200), (0, 200)])
+    box = (20, 20, 80, 150)   # seated guest: torso/hips in 'near'; legs hidden, box bottom spills into 'far'
+    assert assign_zone(foot_point(box), [near, far]).zone_id == "far"          # old rule: wrong table
+    assert assign_zone_by_overlap(box, [near, far]).zone_id == "near"          # new rule: right table
+    assert assign_zone_by_overlap((300, 300, 340, 380), [near, far]) is None   # outside everything
+    glass = Zone("glass", [(0, 0), (100, 100), (0, 100)], "exclude")
+    assert assign_zone_by_overlap((10, 40, 30, 90), [near, glass]) is None     # exclusion still wins

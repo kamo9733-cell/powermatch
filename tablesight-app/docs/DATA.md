@@ -6,4 +6,4 @@
 ## Clip register
 | id | description | source | licence / consent | status |
 |---|---|---|---|---|
-| rec-001 | 11 s phone screen-recording (landscape 2622x1206, HEVC) of a live CCTV view of a restaurant dining room, burned-in timestamp 2026-10-19 21:38 | supplied by the project owner in chat | **unknown: need written confirmation that the venue owner consents to use as evaluation data, and that signage/staff notice covers it** | **kept local only, NOT committed** (identifiable guests); eval use blocked until provenance is confirmed |
+| rec-001 | 11 s phone screen-recording (landscape 2622x1206, HEVC) of a live CCTV view of a restaurant dining room (burned-in timestamp 2026-10-19 21:38) | supplied by the project owner in chat | **consent stated by the project owner in chat ("All consent"); no written release from the venue on file — obtain one before any external sharing or training use** | used for local evaluation only. The video stays **git-ignored** (`data/`, identifiable guests); only zone polygons and hand labels are committed (`evalset/rec-001/`). |
